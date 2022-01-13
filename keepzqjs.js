@@ -1,12 +1,12 @@
 const $ = new Env('早起打卡浇水');
 let status;
 
-status = (status = ($.getval("zqdkstatus") || "1")) > 1 ? `${status}` : "";
+status = (status = ($.getval("zqjsstatus") || "1")) > 1 ? `${status}` : "";
 
-const zqdkurlArr = [], zqdkhdArr = [], zqdkcount = ''
+const zqjsurlArr = [], zqjshdArr = [], zqjscount = ''
 
-let zqdkurl = $.getdata('zqdkurl')
-let zqdkhd = $.getdata('zqdkhd')
+let zqjsurl = $.getdata('zqjsurl')
+let zqjshd = $.getdata('zqjshd')
 
 
 
@@ -14,19 +14,19 @@ let zqdkhd = $.getdata('zqdkhd')
 !(async () => {
     if (typeof $request !== "undefined") {
 
-        zqdkck()
+        zqjsck()
 
     } else {
-        zqdkurlArr.push($.getdata('zqdkurl'))
-        zqdkhdArr.push($.getdata('zqdkhd'))
+        zqjsurlArr.push($.getdata('zqjsurl'))
+        zqjshdArr.push($.getdata('zqjshd'))
 
 
-        let zqdkcount = ($.getval('zqdkcount') || '1');
+        let zqjscount = ($.getval('zqjscount') || '1');
 
-        for (let i = 2; i <= zqdkcount; i++) {
+        for (let i = 2; i <= zqjscount; i++) {
 
-            zqdkurlArr.push($.getdata(`zqdkurl${i}`))
-            zqdkhdArr.push($.getdata(`zqdkhd${i}`))
+            zqjsurlArr.push($.getdata(`zqjsurl${i}`))
+            zqjshdArr.push($.getdata(`zqjshd${i}`))
 
 
         }
@@ -38,12 +38,12 @@ let zqdkhd = $.getdata('zqdkhd')
                 8 * 60 * 60 * 1000
             ).toLocaleString()} ===============================================\n`);
         //多账号运行
-        for (let i = 0; i < zqdkhdArr.length; i++) {
+        for (let i = 0; i < zqjshdArr.length; i++) {
 
-            if (zqdkhdArr[i]) {
+            if (zqjshdArr[i]) {
 
-                zqdkurl = zqdkurlArr[i];
-                zqdkhd = zqdkhdArr[i];
+                zqjsurl = zqjsurlArr[i];
+                zqjshd = zqjshdArr[i];
 
 
                 $.index = i + 1;
@@ -54,7 +54,7 @@ let zqdkhd = $.getdata('zqdkhd')
                     $.index = c + 1
 
 
-                    await zqdkjs()//你要执行的版块  
+                    await zqjs()//你要执行的版块  
                     await $.wait(1000)//你要延迟的时间  1000=1秒
 
 
@@ -73,15 +73,15 @@ let zqdkhd = $.getdata('zqdkhd')
 //https://www.xiaeke.com/benmao/index.php/Home/MorningTree/gainEnergy?user_id=103295&energy_type=0&energy=10
 
 //获取ck
-function zqdkck() {
+function zqjsck() {
     if ($request.url.indexOf("gainEnergy") > -1) {
-        const zqdkurl = $request.url
-        if (zqdkurl) $.setdata(zqdkurl, `zqdkurl${status}`)
-        $.log(zqdkurl)
+        const zqjsurl = $request.url
+        if (zqjsurl) $.setdata(zqjsurl, `zqjsurl${status}`)
+        $.log(zqjsurl)
 
-        const zqdkhd = JSON.stringify($request.headers)
-        if (zqdkhd) $.setdata(zqdkhd, `zqdkhd${status}`)
-        $.log(zqdkhd)
+        const zqjshd = JSON.stringify($request.headers)
+        if (zqjshd) $.setdata(zqjshd, `zqjshd${status}`)
+        $.log(zqjshd)
 
         $.msg($.name, "", `keep早起打卡浇水${status}获取headers成功`)
 
@@ -92,12 +92,12 @@ function zqdkck() {
 
 
 //执行浇水任务
-function zqdkjs(timeout = 0) {
+function zqjs(timeout = 0) {
     return new Promise((resolve) => {
 
         let url = {
-            url: zqdkurl,
-            headers: JSON.parse(zqdkhd),
+            url: zqjsurl,
+            headers: JSON.parse(zqjshd),
         }
 
 
