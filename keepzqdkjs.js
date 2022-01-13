@@ -70,11 +70,11 @@ let zqdkhd = $.getdata('zqdkhd')
     .finally(() => $.done())
 
 
-//https://www.xiaeke.com/benmao/index.php/Home/MorningNote/addNote?user_id=103295
+//https://www.xiaeke.com/benmao/index.php/Home/MorningTree/gainEnergy?user_id=103295&energy_type=0&energy=10
 
 //获取ck
 function zqdkck() {
-    if ($request.url.indexOf("addNote") > -1) {
+    if ($request.url.indexOf("gainEnergy") > -1) {
         const zqdkurl = $request.url
         if (zqdkurl) $.setdata(zqdkurl, `zqdkurl${status}`)
         $.log(zqdkurl)
