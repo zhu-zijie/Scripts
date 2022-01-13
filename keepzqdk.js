@@ -1,4 +1,4 @@
-const $ = new Env('早起打卡');
+const $ = new Env('早起打卡浇水');
 let status;
 
 status = (status = ($.getval("zqdkstatus") || "1")) > 1 ? `${status}` : "";
@@ -124,6 +124,37 @@ function zqdk(timeout = 0) {
     })
 }
 
+
+//执行浇水任务
+function zqdk(timeout = 0) {
+    return new Promise((resolve) => {
+
+        let url = {
+            url: zqdkurl,
+            headers: JSON.parse(zqdkhd),
+        }
+
+
+        $.get(url, async (err, resp, data) => {
+            try {
+
+                data = JSON.parse(data)
+
+                if (data.status == 13000) {
+					console.log('\n浇水失败:'+data.info)
+
+                } else {
+					console.log('\n浇水成功: '+data.info)
+                }
+            } catch (e) {
+
+            } finally {
+
+                resolve()
+            }
+        }, timeout)
+    })
+}
 
 
 
