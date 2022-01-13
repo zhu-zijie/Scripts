@@ -1,4 +1,4 @@
-const $ = new Env('早起打卡');
+const $ = new Env('早起打卡浇水');
 let status;
 
 status = (status = ($.getval("zqdkstatus") || "1")) > 1 ? `${status}` : "";
@@ -47,14 +47,14 @@ let zqdkhd = $.getdata('zqdkhd')
 
 
                 $.index = i + 1;
-                console.log(`\n\n开始【打卡${$.index}】`)
+                console.log(`\n\n开始【浇水${$.index}】`)
 
                 //循环运行
                 for (let c = 0; c < 1; c++) {
                     $.index = c + 1
 
 
-                    await zqdk()//你要执行的版块  
+                    await zqdkjs()//你要执行的版块  
                     await $.wait(1000)//你要延迟的时间  1000=1秒
 
 
@@ -83,7 +83,7 @@ function zqdkck() {
         if (zqdkhd) $.setdata(zqdkhd, `zqdkhd${status}`)
         $.log(zqdkhd)
 
-        $.msg($.name, "", `keep早起打卡${status}获取headers成功`)
+        $.msg($.name, "", `keep早起打卡浇水${status}获取headers成功`)
 
     }
 }
@@ -91,8 +91,8 @@ function zqdkck() {
 
 
 
-//执行打卡任务
-function zqdk(timeout = 0) {
+//执行浇水任务
+function zqdkjs(timeout = 0) {
     return new Promise((resolve) => {
 
         let url = {
@@ -107,11 +107,11 @@ function zqdk(timeout = 0) {
                 data = JSON.parse(data)
 
                 if (data.status == 13000) {
-            console.log('\n打卡失败:'+data.info)
+            console.log('\n浇水失败:'+data.info)
 
 
                 } else {
-            console.log('\n打卡成功: '+data.info)
+            console.log('\n浇水成功: '+data.info)
 
                 }
             } catch (e) {
