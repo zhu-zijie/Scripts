@@ -75,7 +75,7 @@ let zqjshd = $.getdata('zqjshd')
 
 //获取ck
 function zqdkck() {
-    if ($request.url.indexOf("addNote") > -1) {
+    if ($request.url.indexOf("addNote?") > -1) {
         const zqdkurl = $request.url
         if (zqdkurl) $.setdata(zqdkurl, `zqdkurl${status}`)
         $.log(zqdkurl)
@@ -91,7 +91,7 @@ function zqdkck() {
 
 //获取ck
 function zqjsck() {
-    if ($request.url.indexOf("gainEnergy") > -1) {
+    if ($request.url.indexOf("gainEnergy?") > -1) {
         const zqjsurl = $request.url
         if (zqjsurl) $.setdata(zqjsurl, `zqjsurl${status}`)
         $.log(zqjsurl)
