@@ -1,9 +1,8 @@
 {
  "name": "zijie_scripts",
- "description": "关于打卡签到以及模板的管理",
+ "description": "关于打卡签到的管理",
  "task": [
-	{"config":"0 0 6 * * * https://raw.githubusercontent.com/zhu-zijie/scripts/main/keepzqdk.js, tag=keep早起打卡浇水, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true", "addons":"https://raw.githubusercontent.com/zhu-zijie/scripts/main/cookies.conf"},
-    {"config":"0 0 9 * * * https://raw.githubusercontent.com/zhu-zijie/scripts/main/template/get.js, tag=get方法, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true", "addons":"https://raw.githubusercontent.com/zhu-zijie/scripts/main/cookies.conf"},
+	 {"config":"0 0 9 * * * https://raw.githubusercontent.com/zhu-zijie/scripts/main/template/get.js, tag=get方法, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true", "addons":"https://raw.githubusercontent.com/zhu-zijie/scripts/main/cookies.conf"},
     {"config":"0 0 9 * * * https://raw.githubusercontent.com/zhu-zijie/scripts/main/template/post.js, tag=post方法, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true", "addons":"https://raw.githubusercontent.com/zhu-zijie/scripts/main/cookies.conf"},
   ]
 }
