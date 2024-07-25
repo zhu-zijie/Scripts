@@ -1,0 +1,55 @@
+# 2024-07-25 14:56:45
+# ChatGPT
+HOST-KEYWORD, chatgpt-async-webps-prod-eastus-
+HOST-SUFFIX, webpubsub.azure.com
+HOST-KEYWORD, openaicom-api-
+HOST-SUFFIX, azurefd.net
+HOST, chat.openai.com.cdn.cloudflare.net
+HOST, o33249.ingest.sentry.io
+HOST, openaiapi-site.azureedge.net
+HOST, openaicom.imgix.net
+HOST, openaicomproductionae4b.blob.core.windows.net
+HOST, production-openaicom-storage.azureedge.net
+HOST-SUFFIX, chatgpt.com
+HOST-SUFFIX, oaistatic.com
+HOST-SUFFIX, oaiusercontent.com
+HOST-SUFFIX, openai.com
+
+# Copilot
+HOST, api.githubcopilot.com
+HOST, copilot-proxy.githubusercontent.com
+HOST, copilot.microsoft.com
+HOST, sydney.bing.com
+HOST, www.bing.com
+
+# Gemini
+HOST, bard.google.com
+HOST, gemini.google.com
+HOST, generativelanguage.googleapis.com
+HOST, ai.google.dev
+HOST, aida.googleapis.com
+HOST, aistudio.google.com
+HOST, alkalimakersuite-pa.clients6.google.com
+HOST, makersuite.google.com
+
+# Claude
+HOST-SUFFIX, anthropic.com
+HOST-SUFFIX, claude.ai
+IP-CIDR, 160.79.104.0/23, no-resolve
+IP-CIDR6, 2607:6bc0::/48, no-resolve
+
+# JetBrains AI
+HOST-SUFFIX, grazie.ai
+HOST-SUFFIX, grazie.aws.intellij.net
+
+# Meta AI
+HOST, imagine.meta.com
+HOST-SUFFIX, meta.ai
+
+# Perplexity
+HOST-SUFFIX, perplexity.ai
+
+# Mistral AI
+HOST, chat.mistral.ai
+HOST, console.mistral.ai
+HOST-SUFFIX, mistral.ai
