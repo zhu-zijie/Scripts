@@ -12,7 +12,7 @@ const path = require("path");
 const csvFilePath = path.join("./", "access_tokens.csv");
 
 // 请求头，链接，方式
-const url = `https://vote.diyi.cn/api/activity/vote/11`;
+const url = `https://vote.diyi.cn/api/activity/vote/115`;
 const method = `POST`;
 const headers = {
   "Sec-Fetch-Dest": `empty`,
