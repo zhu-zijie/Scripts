@@ -46,7 +46,7 @@ const myRequest = {
 const accessTokens = [];
 
 // 创建读取流并解析CSV文件
-fs.createReadStream(csvFilePath, { encoding: "utf8" })
+/* fs.createReadStream(csvFilePath, { encoding: "utf8" })
   .pipe(csv())
   .on("data", (accessToken) => {
     // console.log(accessToken.AccessToken);
@@ -57,6 +57,22 @@ fs.createReadStream(csvFilePath, { encoding: "utf8" })
   .on("end", () => {
     console.log("读取完成！");
     sendRequests();
+  }); */
+
+// 读取CSV文件
+fs.createReadStream(csvFilePath, { encoding: "utf8" })
+  .on("data", (data) => {
+    // 将读取到的数据按行分割，并去掉每行末尾的\n
+    const lines = data.split("\n");
+    const tokens = lines.slice(1, -1).map((token) => token.trim()); // 跳过第一行
+    accessTokens.push(...tokens);
+  })
+  .on("end", () => {
+    console.log("读取完成！");
+    sendRequests();
+  })
+  .on("error", (error) => {
+    console.error("Error reading CSV file:", error);
   });
 
 // 发送请求
