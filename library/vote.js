@@ -54,7 +54,7 @@ fs.createReadStream(csvFilePath, { encoding: "utf8" })
     }
   })
   .on("end", () => {
-    console.log("读取完成！");
+    console.log("-----读取完成！-----");
     sendRequests();
   });
 

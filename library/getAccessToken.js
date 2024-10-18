@@ -11,6 +11,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const csv = require("csv-parser");
+const { exec } = require("child_process");
 
 // 请求头，方式，链接
 const url = `https://vote.diyi.cn/api/auth/login_by_code`;
@@ -291,52 +292,60 @@ function generateRandomUsername() {
 
 // 发送请求
 function sendRequests() {
+  const promises = [];
   for (let i = 0; i < 100; i++) {
-    // 间隔3秒发送一次请求
-    setTimeout(() => {
-      // 构造请求体
-      const randomPhoneNumber = generateRandomPhoneNumber();
-      const randomName = generateRandomUsername();
-      const body = `{"mobile":"${randomPhoneNumber}","username":"${randomName}","address":"湖北省武汉市洪山区中国地质大学"}`;
+    const promise = new Promise((resolve, reject) => {
+      // 间隔3秒发送一次请求
+      setTimeout(() => {
+        // 构造请求体
+        const randomPhoneNumber = generateRandomPhoneNumber();
+        const randomName = generateRandomUsername();
+        const body = `{"mobile":"${randomPhoneNumber}","username":"${randomName}","address":"湖北省武汉市洪山区中国地质大学"}`;
 
-      // 封装请求
-      const myRequest = {
-        url: url,
-        method: method,
-        headers: headers,
-        data: body,
-        responseType: "arraybuffer",
-      };
+        // 封装请求
+        const myRequest = {
+          url: url,
+          method: method,
+          headers: headers,
+          data: body,
+          responseType: "arraybuffer",
+        };
 
-      // 发送请求
-      axios(myRequest)
-        .then((response) => {
-          // 将响应转化为字符串
-          // const decodedData = Buffer.from(response.data, 'binary').toString('utf-8');
-          // console.log(response.status + "\n\n" + decodedData);
-          const decodedData = Buffer.from(response.data, "binary").toString(
-            "utf-8"
-          );
-          // 转化为Json对象
-          const jsonData = JSON.parse(decodedData);
-          // 获取access_token
-          const accessToken = jsonData.data.access_token;
-          console.log("Access Token:", accessToken);
-          // 将access_token写入csv文件
-          fs.appendFileSync(writeCsvFilePath, `${accessToken}\n`, {
-            flag: "a",
-            encoding: "utf8",
+        // 发送请求
+        axios(myRequest)
+          .then((response) => {
+            const decodedData = Buffer.from(response.data, "binary").toString(
+              "utf-8"
+            );
+            // 转化为Json对象
+            const jsonData = JSON.parse(decodedData);
+            // 获取access_token
+            const accessToken = jsonData.data.access_token;
+            fs.appendFileSync(writeCsvFilePath, `${accessToken}\n`, {
+              flag: "a",
+              encoding: "utf-8",
+            });
+            console.log("Access Token:", accessToken);
+            resolve(); // 将 Promise 标记为已完成
+          })
+          .catch((error) => {
+            console.log(error.message);
+            reject(error); // 将 Promise 标记为失败
           });
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-    }, i * 3000);
+      }, i * 3000);
+    });
+    promises.push(promise);
   }
+  return Promise.all(promises);
 }
 
 const startTime = Date.now(); // 记录开始时间
-sendRequests(); // 发送请求
-const endTime = Date.now(); // 记录结束时间
-const totalTime = (endTime - startTime) / 1000; // 计算总时间（秒）
-console.log(`一共消耗: ${totalTime} seconds`);
+sendRequests()
+  .then(() => {
+    const endTime = Date.now(); // 记录结束时间
+    const totalTime = (endTime - startTime) / 1000; // 计算总时间（秒）
+    console.log(`------ 一共消耗: ${totalTime} seconds ------`);
+  })
+  .catch((error) => {
+    console.log("Error in sending requests:", error);
+  });
