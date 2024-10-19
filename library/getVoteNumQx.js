@@ -34,8 +34,8 @@ const myRequest = {
   responseType: "arraybuffer",
 };
 
-axios(myRequest)
-  .then((response) => {
+$task.fetch(myRequest).then(
+  (response) => {
     const decodedData = Buffer.from(response.data, "binary").toString("utf-8");
     const jsonData = JSON.parse(decodedData);
     const currentTime = new Date().toLocaleString();
@@ -43,11 +43,12 @@ axios(myRequest)
     const title = jsonData.data.data.data[4].title;
     console.log(`${title}\n当前时间: ${currentTime}, 当前票数: ${voteNum}`);
     $.msg(title, `当前时间: ${currentTime}`, `当前票数: ${voteNum}`);
-  })
-  .catch((error) => {
-    console.log(error.message);
-    $.msg("获取票数失败", error.message);
-  });
+  },
+  (reason) => {
+    console.log(reason.error);
+    $.msg("获取票数失败", reason.error);
+  }
+);
 
 function Env(t, e) {
   "undefined" != typeof process &&
