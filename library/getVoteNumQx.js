@@ -3,10 +3,6 @@
  *
  */
 
-const $ = new Env("获取票数");
-const axios = require("axios");
-const notify = $.isNode() ? require("./sendNotify") : "";
-
 const url = `https://vote.diyi.cn/api/activity/1?page=12&page_count=10`;
 const method = `GET`;
 const headers = {
