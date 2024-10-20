@@ -1,14 +1,15 @@
 /* 
 注意事项：
-    1. 本脚本用于投票，每次投票需要一个手机号码和姓名，所以需要随机生成手机号码和姓名
+    1. 本脚本用于投票，每次投票需要一个手机号码和姓名，所以需要随机生成手机号码和姓名（姓和名可以自己按照模板添加，手机号前缀可以自己修改）
     2. 本脚本使用axios发送请求，需要安装axios   ----> 安装的命令：npm install axios
     3. 本脚本使用的是POST请求，请求头中包含了Authorization字段，这个字段是登录后获取的access_token
     4. voteUrl是投票的链接，其中的115是投票的id，可以根据实际情况修改
     5. 本脚本是在node环境下运行的，可以使用node getAccessTokenAndVote.js命令运行或者使用vscode的Run Code插件运行(建议后者)
     6. address字段的地址自己根据情况调整
-    7. i * 2000 + Math.random() * 1000 这个2000代表2秒，1000代表1秒，math.random() * 1000代表0-1秒的随机数，所以每次请求的间隔是2-3秒,以此类推
-    8. headers中的User-Agent字段是模拟手机端的请求头，可以根据实际情况修改(//是这行代码不运行的意思，自己从下面选择一个即可)
-    9. 不要将时间调整的太短，否则会被封IP，理性投票
+    7. i * 5000 + Math.random() * 5000 这个5000代表5秒，1000代表1秒，math.random() * 5000代表0-5秒的随机数，所以每次请求的间隔是5-10秒,以此类推
+    8. 必看！！！headers中的User-Agent字段是模拟手机端的请求头，可以根据实际情况修改(//是这行代码不运行的意思，自己从下面选择一个删掉//即可)
+    9. 由于获取票数是另外一个链接，为了不影响代码运行效率，没有集成在此代码中，自行运行getVoteNum.js即可获取票数
+    10. 不要将时间调整的太短，否则会被封IP，理性投票
 */
 
 const axios = require("axios");
@@ -26,7 +27,7 @@ const headers = {
   //"User-Agent": 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.33(0x18002129) NetType/WIFI Language/en',
   //"User-Agent": 'Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36',
   //"User-Agent": 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
-  "User-Agent": 'Mozilla/5.0 (Linux; Android 13; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36',
+  //"User-Agent": 'Mozilla/5.0 (Linux; Android 13; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36',
   Authorization: ``,
   "Sec-Fetch-Mode": `cors`,
   Host: `vote.diyi.cn`,
@@ -159,12 +160,11 @@ function sendRequests() {
   const promises = [];
   for (let i = 0; i < 100; i++) {
     const promise = new Promise((resolve, reject) => {
-      // 间隔3秒发送一次请求
       setTimeout(() => {
         // 构造请求体
         const randomPhoneNumber = generateRandomPhoneNumber();
         const randomName = generateRandomUsername();
-        const body = `{"mobile":"${randomPhoneNumber}","username":"${randomName}","address":"湖北省武汉市洪山区中国地质大学"}`;
+        const body = `{"mobile":"${randomPhoneNumber}","username":"${randomName}","address":"湖北省武汉市"}`;
 
         // 封装请求
         const myRequest = {
@@ -196,8 +196,11 @@ function sendRequests() {
                   "binary"
                 ).toString("utf-8");
                 const jsonData = JSON.parse(decodedData);
-                const residueNum = jsonData.data.residue_num;
-                console.log("投票成功! 剩余票数：" + residueNum);
+                const residueNum = jsonData.data.residue_num; // 剩余票数
+                const currentTime = new Date().toLocaleString(); // 当前时间
+                console.log(
+                  "投票成功！ " + currentTime + ", 剩余票数：" + residueNum
+                );
                 resolve(); // 将 Promise 标记为已完成
               })
               .catch((error) => {
@@ -208,7 +211,7 @@ function sendRequests() {
           .catch((error) => {
             console.log(error.message);
           });
-      }, i * 2000 + Math.random() * 1000); //2-3秒运行一次
+      }, i * 5000 + Math.random() * 5000); //5-10秒运行一次
     });
     promises.push(promise);
   }
