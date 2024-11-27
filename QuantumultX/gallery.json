@@ -4,7 +4,7 @@
  "task": [
   {"config":"0 0 0 * * * https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/mi/step.js, tag=小米刷步数, img-url=https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/mi/color.png, enabled=true"},
   {"config":"0 6 9 * * * https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/moyu.js, tag=摸鱼来啦, img-url=https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/67/04/ff/6704ff4c-b49b-de91-70ac-201c62d5296f/AppIcon-0-0-1x_U007emarketing-0-0-0-5-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/144x144bb.png, enabled=true"},
-  {"config":"0 0 9 * * * https://gist.githubusercontent.com/Sliverkiss/33800a98dcd029ba09f8b6fc6f0f5162/raw/aliyun.js, tag=阿里云签到, img-url=https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/AliYunDrive.png, enabled=true"},
+  {"config":"0 0 9 * * * https://gist.githubusercontent.com/Sliverkiss/33800a98dcd029ba09f8b6fc6f0f5162/raw/aliyun.js, tag=阿里云盘, img-url=https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/AliYunDrive.png, enabled=true"},
   {"config":"0 0 9 * * * https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/60s.js, tag=每天60秒读懂世界, img-url=https://raw.githubusercontent.com/Yuheng0101/X/main/Assets/60s.png, enabled=true"},
   {"config":"0 10 0 * * ? https://raw.githubusercontent.com/shufflewzc/faker/main/Mrhl.js, tag=汇率通知, img-url=https://raw.githubusercontent.com/chxm1023/Task/main/icon/hljk.png, enabled=true"}
   ]
