@@ -16,26 +16,42 @@ const yesterdayDay = String(yesterday.getDate()).padStart(2, "0");
 const yesterdayDate = `${yesterdayYear}-${yesterdayMonth}-${yesterdayDay}`;
 
 // 设置预期的时间格式
-const desiredTime = "21:30-23:30";
+const desiredTime = "21:30-22:30";
 const createTime = "10:30:00";
 const payTime = "10:32:15";
 
 // 替换支付时间
 body = body.replace(
-  /"paytime":"\d{4}-\d{2}-\d{2} \d{2}:\d{2}-\d{2}:\d{2}"/,
+  /"paytime":"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/,
   `"paytime":"${yesterday} ${payTime}"`
 );
 
 // 替换预定时间
 body = body.replace(
-  /"bookingtime":"(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}-\d{2}:\d{2})"/,
+  /"bookingtime":"(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})"/,
   `"bookingtime":"${currentDate} ${desiredTime}"`
 );
 
 // 替换订单生成时间
 body = body.replace(
-  /"paytime":"\d{4}-\d{2}-\d{2} \d{2}:\d{2}-\d{2}:\d{2}"/,
-  `"paytime":"${yesterday} ${createTime}"`
+  /"createdate":"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/,
+  `"createdate":"${yesterday} ${createTime}"`
 );
+
+// 替换姓名
+body = body.replace(/"username":"([^"]*)"/, '"username":"祝子杰"');
+
+// 打印修改成功信息
+console.log(`订单修改成功：${firstElement.username}`);
+console.log(`预约时间已修改为：${firstElement.bookingtime}`);
+
+// 使用通知功能（如果环境支持）
+if (typeof $notify === "function") {
+  $notify(
+    "预约修改成功",
+    `姓名: ${firstElement.username}`,
+    `时间: ${currentDate} ${desiredTime}`
+  );
+}
 
 $done({ body });
