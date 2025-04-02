@@ -4,9 +4,6 @@
 var body = $response.body;
 let jsonData = JSON.parse(body);
 
-// 提取第一个元素
-let firstElement = jsonData.resultData.content[0];
-
 // 获取当前时间
 const now = new Date();
 const year = now.getFullYear();
@@ -14,36 +11,58 @@ const month = String(now.getMonth() + 1).padStart(2, "0");
 const day = String(now.getDate()).padStart(2, "0");
 const currentDate = `${year}-${month}-${day}`;
 
-// 设置预期的时间格式
-const desiredTime = "19:30-22:30";
+// 设置可用的时间段
+const timeSlots = ["19:30-20:30", "20:30-21:30", "21:30-22:30"];
 const createTime = "10:30:25";
 
-// 修改第一个元素中的时间字段
-if (firstElement) {
+// 获取需要修改的元素（从索引1开始）
+const elementsToUpdate = jsonData.resultData.content.slice(1, 4);
+const updatedElements = [];
+
+// 使用循环修改每个元素
+for (let i = 0; i < elementsToUpdate.length; i++) {
+  const element = elementsToUpdate[i];
+  if (!element) continue;
+
+  // 为每个元素分配不同的时间段
+  const desiredTime = timeSlots[i % timeSlots.length];
+
   // 修改reserveDate为当前日期
-  firstElement.reserveDate = currentDate;
+  element.reserveDate = currentDate;
 
   // 修改bookingtime格式 "YYYY-MM-DD HH:MM-HH:MM"
-  firstElement.bookingtime = `${currentDate} ${desiredTime}`;
+  element.bookingtime = `${currentDate} ${desiredTime}`;
 
   // 修改reserveTime数组
-  firstElement.reserveTime = [desiredTime];
+  element.reserveTime = [desiredTime];
 
   // 修改createdate
-  firstElement.createdate = `${currentDate} ${createTime}`;
+  element.createdate = `${currentDate} ${createTime}`;
+
+  // 记录已更新的元素和对应的时间段
+  updatedElements.push({
+    element: element,
+    timeSlot: desiredTime,
+  });
 
   // 打印修改成功信息
-  console.log(`订单修改成功：${firstElement.nodename}`);
-  console.log(`预约时间已修改为：${firstElement.bookingtime}`);
+  console.log(`订单修改成功：${element.nodename}`);
+  console.log(`预约时间已修改为：${element.bookingtime}`);
+}
 
-  // 使用通知功能（如果环境支持）
-  if (typeof $notify === "function") {
-    $notify(
-      "预约修改成功",
-      `场馆: ${firstElement.nodename}`,
-      `时间: ${currentDate} ${desiredTime}`
-    );
-  }
+if (typeof $notify === "function" && updatedElements.length > 0) {
+  const venueInfo = updatedElements
+    .map(
+      (item, index) =>
+        `场馆${index + 1}: ${item.element.nodename} (${item.timeSlot})`
+    )
+    .join("\n");
+
+  $notify(
+    "预约修改成功",
+    `已修改 ${updatedElements.length} 个预约`,
+    `时间: ${currentDate}\n${venueInfo}`
+  );
 }
 
 // 转换回JSON字符串
