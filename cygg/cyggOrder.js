@@ -1,3 +1,6 @@
+// 仅供测试使用，禁止用于商业用途
+// 2025-04-02
+
 var body = $response.body;
 let jsonData = JSON.parse(body);
 
