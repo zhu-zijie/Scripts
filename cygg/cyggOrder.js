@@ -29,7 +29,7 @@ if (firstElement) {
   // 修改reserveTime数组
   firstElement.reserveTime = [desiredTime];
 
-  // 修改createdate (今天的创建时间)
+  // 修改createdate
   firstElement.createdate = `${currentDate} ${createTime}`;
 
   // 打印修改成功信息

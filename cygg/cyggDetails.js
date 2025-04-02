@@ -2,10 +2,10 @@
 // 2025-04-02
 
 var body = $response.body;
-let jsonData = JSON.parse(body).resultData;
+let jsonData = JSON.parse(body);
 
 // 提取第一个元素
-let firstElement = jsonData[0];
+let firstElement = jsonData.resultData;
 
 // 获取当前日期
 const now = new Date();
