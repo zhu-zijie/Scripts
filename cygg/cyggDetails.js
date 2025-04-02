@@ -17,30 +17,30 @@ const yesterdayDay = String(yesterday.getDate()).padStart(2, "0");
 const yesterdayDate = `${yesterdayYear}-${yesterdayMonth}-${yesterdayDay}`;
 
 // 设置预期的时间格式
-const desiredTime = "21:30-22:30";
+const desiredTime = "19:30-22:30";
 const createTime = "10:30:00";
 const payTime = "10:32:15";
 
 // 替换支付时间
 body = body.replace(
-  /"paytime":"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/,
-  `"paytime":"${yesterday} ${payTime}"`
+  /"paytime" : "\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/,
+  `"paytime" : "${yesterday} ${payTime}"`
 );
 
 // 替换预定时间
 body = body.replace(
-  /"bookingtime":"(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})"/,
-  `"bookingtime":"${currentDate} ${desiredTime}"`
+  /"bookingtime" : "(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})"/,
+  `"bookingtime" : "${currentDate} ${desiredTime}"`
 );
 
 // 替换订单生成时间
 body = body.replace(
-  /"createdate":"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/,
-  `"createdate":"${yesterday} ${createTime}"`
+  /"createdate" : "\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/,
+  `"createdate" : "${yesterday} ${createTime}"`
 );
 
 // 替换姓名
-body = body.replace(/"username":"([^"]*)"/, '"username":"祝子杰"');
+body = body.replace(/"username" : "([^"]*)"/, '"username" : "祝子杰"');
 
 // 打印修改成功信息
 console.log(`订单修改成功：${jsonData.resultData.username}`);
