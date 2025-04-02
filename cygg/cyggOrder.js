@@ -13,7 +13,6 @@ const currentDate = `${year}-${month}-${day}`;
 
 // 设置预期的时间格式
 const desiredTime = "21:30-22:30";
-ß;
 const createTime = "10:30:25";
 
 // 修改第一个元素中的时间字段
