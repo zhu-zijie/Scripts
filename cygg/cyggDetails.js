@@ -41,20 +41,4 @@ body = body.replace(
 
 body = body.replace(/"username" : "([^"]*)"/, '"username" : "祝子杰"');
 
-// 然后解析JSON以便访问修改后的数据
-let jsonData = JSON.parse(body);
-
-// 打印修改成功信息
-console.log(`订单修改成功：${jsonData.resultData.username}`);
-console.log(`预约时间已修改为：${currentDate} ${desiredTime}`);
-
-// 使用通知功能（如果环境支持）
-if (typeof $notify === "function") {
-  $notify(
-    "预约修改成功",
-    `姓名: ${jsonData.resultData.username}`,
-    `时间: ${currentDate} ${desiredTime}`
-  );
-}
-
 $done({ body });
