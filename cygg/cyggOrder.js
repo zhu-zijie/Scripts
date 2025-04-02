@@ -48,5 +48,4 @@ if (firstElement) {
 
 // 转换回JSON字符串
 body = JSON.stringify(jsonData);
-
 $done({ body });
