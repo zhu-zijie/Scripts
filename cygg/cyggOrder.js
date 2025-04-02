@@ -59,7 +59,6 @@ if (typeof $notify === "function" && updatedElements.length > 0) {
     .join("\n");
 
   $notify(
-    "预约修改成功",
     `已修改 ${updatedElements.length} 个预约`,
     `时间: ${currentDate}\n${venueInfo}`
   );

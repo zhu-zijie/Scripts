@@ -3,8 +3,6 @@
 
 var body = $response.body;
 let jsonData = JSON.parse(body);
-
-// 提取第一个元素
 let element = jsonData.resultData;
 
 // 获取当前日期
@@ -23,7 +21,7 @@ const yesterdayDay = String(yesterday.getDate()).padStart(2, "0");
 const yesterdayDate = `${yesterdayYear}-${yesterdayMonth}-${yesterdayDay}`;
 
 // 设置预期的时间格式
-const desiredTime = "19:30-22:30";
+const desiredTime = "21:30-22:30";
 const createTime = "10:30:00";
 const payTime = "10:32:15";
 
