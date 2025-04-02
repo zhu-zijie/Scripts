@@ -1,4 +1,5 @@
 var body = $response.body;
+let jsonData = JSON.parse(body);
 
 // 获取当前日期
 const now = new Date();
@@ -42,16 +43,18 @@ body = body.replace(
 body = body.replace(/"username":"([^"]*)"/, '"username":"祝子杰"');
 
 // 打印修改成功信息
-console.log(`订单修改成功：${firstElement.username}`);
-console.log(`预约时间已修改为：${firstElement.bookingtime}`);
+console.log(`订单修改成功：${jsonData.resultData.username}`);
+console.log(`预约时间已修改为：${jsonData.resultData.bookingtime}`);
 
 // 使用通知功能（如果环境支持）
 if (typeof $notify === "function") {
   $notify(
     "预约修改成功",
-    `姓名: ${firstElement.username}`,
+    `姓名: ${jsonData.resultData.username}`,
     `时间: ${currentDate} ${desiredTime}`
   );
 }
 
+// 转换回JSON字符串
+body = JSON.stringify(jsonData);
 $done({ body });
