@@ -5,7 +5,7 @@ var body = $response.body;
 let jsonData = JSON.parse(body);
 
 // 提取第一个元素
-let firstElement = jsonData.resultData;
+let element = jsonData.resultData;
 
 // 获取当前日期
 const now = new Date();
@@ -27,27 +27,27 @@ const desiredTime = "19:30-22:30";
 const createTime = "10:30:00";
 const payTime = "10:32:15";
 
-if (firstElement) {
+if (element) {
   // 修改reserveDate为当前日期
-  firstElement.paytime = `${yesterdayDate} ${payTime}`;
+  element.paytime = `${yesterdayDate} ${payTime}`;
 
   // 修改bookingtime格式 "YYYY-MM-DD HH:MM-HH:MM"
-  firstElement.bookingtime = `${currentDate} ${desiredTime}`;
+  element.bookingtime = `${currentDate} ${desiredTime}`;
 
   // 修改createdate
-  firstElement.createdate = `${yesterdayDate} ${createTime}`;
+  element.createdate = `${yesterdayDate} ${createTime}`;
 
-  firstElement.username = "祝子杰";
+  element.username = "祝子杰";
 
   // 打印修改成功信息
-  console.log(`订单修改成功：${firstElement.nodename}`);
-  console.log(`预约时间已修改为：${firstElement.bookingtime}`);
+  console.log(`订单修改成功：${element.username}`);
+  console.log(`预约时间已修改为：${element.bookingtime}`);
 
   // 使用通知功能（如果环境支持）
   if (typeof $notify === "function") {
     $notify(
       "预约修改成功",
-      `场馆: ${firstElement.nodename}`,
+      `用户: ${element.username}`,
       `时间: ${currentDate} ${desiredTime}`
     );
   }
