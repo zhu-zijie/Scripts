@@ -1,0 +1,66 @@
+# 依赖目录
+node_modules/
+jspm_packages/
+bower_components/
+
+# 环境配置和敏感信息
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+config.local.js
+*.pem
+*.key
+credentials.json
+
+# 日志文件
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# 构建输出
+dist/
+build/
+coverage/
+.next/
+out/
+.nuxt/
+.cache/
+
+# IDE和编辑器文件
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.project
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+*.swp
+*.swo
+*~
+
+# 临时文件
+.tmp/
+tmp/
+temp/
+.cache/
+
+# 调试文件
+.nyc_output/
+.grunt/
+.lock-wscript/
+.npm/
+.eslintcache
+.node_repl_history
+
+# 自定义项目特定文件
+# token配置文件
+token.json
+credentials.js
