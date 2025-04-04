@@ -10,8 +10,8 @@
 time_period = select, "20:30-21:30", "19:30-20:30", "21:30-22:30", tag=时间段, desc=请从这三个时间段中选择！
 
 [script]
-http-response ^https:\/\/cgyy\.xju\.edu\.cn\/service\/appointment\/appointment\/phone\/payOrderDetails script-path=https://raw.githubusercontent.com/zhu-zijie/Scripts/main/cygg/cyggDetails.js, requires-body=true, tag=修改订单详情, argument=[{time_period}]
-http-response ^https:\/\/cgyy\.xju\.edu\.cn\/service\/appointment\/appointment\/phone/payOrderForPhone script-path=https://raw.githubusercontent.com/zhu-zijie/Scripts/main/cygg/cyggOrder.js, requires-body=true, tag=修改订单列表, argument=[{time_period}]
+http-response ^https:\/\/cgyy\.xju\.edu\.cn\/service\/appointment\/appointment\/phone\/payOrderDetails script-path=https://raw.githubusercontent.com/zhu-zijie/Scripts/main/cygg/cyggDetails.js, requires-body=true, tag=修改订单详情, argument={time_period}
+http-response ^https:\/\/cgyy\.xju\.edu\.cn\/service\/appointment\/appointment\/phone/payOrderForPhone script-path=https://raw.githubusercontent.com/zhu-zijie/Scripts/main/cygg/cyggOrder.js, requires-body=true, tag=修改订单列表, argument={time_period}
 
 [mitm]
 hostname = cgyy.xju.edu.cn
