@@ -5,6 +5,21 @@ $.isNode() && require("dotenv").config();
 const desiredTime = $.isNode()
   ? process.env.TIME_PERIOD
   : $.getdata("time_period") || "19:30-20:30";
+const createTime = $.isNode()
+  ? process.env.CREATE_TIME
+  : $.getdata("create_time") || "10:30:00";
+const payTime = $.isNode()
+  ? process.env.PAY_TIME
+  : $.getdata("pay_time") || "10:32:15";
+const username = $.isNode()
+  ? process.env.USER_NAME
+  : $.getdata("user_name") || "祝子杰";
+const payphone = $.isNode()
+  ? process.env.PAY_PHONE
+  : $.getdata("pay_phone") || "15623109116";
+const idserial = $.isNode()
+  ? process.env.IDSERIAL
+  : $.getdata("idserial") || "107552300303";
 
 let body = $response.body;
 let jsonData = JSON.parse(body);
@@ -25,10 +40,6 @@ const yesterdayMonth = String(yesterday.getMonth() + 1).padStart(2, "0");
 const yesterdayDay = String(yesterday.getDate()).padStart(2, "0");
 const yesterdayDate = `${yesterdayYear}-${yesterdayMonth}-${yesterdayDay}`;
 
-// 设置预期的时间格式
-const createTime = "10:30:00";
-const payTime = "10:32:15";
-
 if (element) {
   // 修改reserveDate为当前日期
   element.paytime = `${yesterdayDate} ${payTime}`;
@@ -39,7 +50,14 @@ if (element) {
   // 修改createdate
   element.createdate = `${yesterdayDate} ${createTime}`;
 
-  element.username = "祝子杰";
+  // 修改姓名
+  element.username = `${username}`;
+
+  // 修改手机号
+  element.payphone = `${payphone}`;
+
+  // 修改学号
+  element.idserial = `${idserial}`;
 
   // 打印修改成功信息
   console.log(`订单修改成功：${element.username}`);
@@ -59,6 +77,7 @@ if (element) {
 body = JSON.stringify(jsonData);
 $done({ body });
 
+// 环境配置
 function Env(t, e) {
   class s {
     constructor(t) {
