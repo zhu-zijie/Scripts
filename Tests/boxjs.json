@@ -2,7 +2,7 @@
   "id": "zijie.app.sub",
   "name": "zijie 脚本订阅",
   "author": "@zijie",
-  "icon": "https://raw.githubusercontent.com/zhu-zijie/Scripts/refs/heads/main/Tests/zijie.png",
+  "icon": "https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/zijie.png",
   "repo": "https://github.com/zhu-zijie/Scripts",
   "apps": [
     {
@@ -74,8 +74,8 @@
       "author": "@zijie",
       "repo": "https://github.com/zhu-zijie/Scripts",
       "icons": [
-        "https://raw.githubusercontent.com/zhu-zijie/Scripts/refs/heads/main/cygg/xinda.png",
-        "https://raw.githubusercontent.com/zhu-zijie/Scripts/refs/heads/main/cygg/xinda.png"
+        "https://raw.githubusercontent.com/zhu-zijie/Scripts/main/cygg/xinda.png",
+        "https://raw.githubusercontent.com/zhu-zijie/Scripts/main/cygg/xinda.png"
       ]
     }
   ]
