@@ -75,6 +75,7 @@
       "author": "@zijie",
       "repo": "https://github.com/zhu-zijie/Scripts",
       "icons": [
+        "https://raw.githubusercontent.com/zhu-zijie/Scripts/refs/heads/main/cygg/xinda.png",
         "https://raw.githubusercontent.com/zhu-zijie/Scripts/refs/heads/main/cygg/xinda.png"
       ],
       "script": "https://raw.githubusercontent.com/zhu-zijie/Scripts/refs/heads/main/cygg/cyggDetails.js"
