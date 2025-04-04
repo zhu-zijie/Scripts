@@ -1,25 +1,14 @@
 /*
-
-马士兵
-编程语言学习
-
-
 [rewrite_local]
-
-
-https:\/\/gateway\.mashibing\.com\/edu-course\/(coursePackage\/app\/1|app\/systemCourse|courseWeb) url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/QuantumultX/msb.js
-
+https:\/\/gateway\.mashibing\.com\/edu-course\/(coursePackage\/app\/1|app\/systemCourse|courseWeb) url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/msb.js
 [mitm] 
-
 hostname = gateway.mashibing.com
 */
-
 
 var body = $response.body;
 
 //试用状态
 body = body.replace(/"isTrial":\s*false/g, '"isTrial":true');
-
 
 //分享状态
 body = body.replace(/"shareState":\s*0/g, '"shareState":1');
@@ -29,6 +18,3 @@ body = body.replace(/"accredit":\s*false/g, '"accredit":true');
 body = body.replace(/"plateId":\s*\d+/g, '"plateId":0');
 
 $done({ body });
-
-
-

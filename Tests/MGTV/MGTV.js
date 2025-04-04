@@ -9,19 +9,19 @@
 http://vip.bz.mgtv.com/client/dynamic_entry url reject
 
 #ios
-^http[s]?:\/\/mobile\.api\.mgtv\.com\/v[0-9]\/(playlist|video\/album|video\/relative|video\/list).*$ url script-request-header https://raw.githubusercontent.com/zhu-zijie/Scripts/main/QuantumultX/MGTV/mgtv1.js
-https://mobile-stream.api.mgtv.com/v1/video/source? url script-request-header https://raw.githubusercontent.com/zhu-zijie/Scripts/main/QuantumultX/MGTV/MGTV.js
-https://nuc.api.mgtv.com/GetUserInfo url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/QuantumultX/MGTV/mgtv3.js
-https://mobile-stream.api.mgtv.com/v1/video/source url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/QuantumultX/MGTV/mgtv3.js
+^http[s]?:\/\/mobile\.api\.mgtv\.com\/v[0-9]\/(playlist|video\/album|video\/relative|video\/list).*$ url script-request-header https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/MGTV/mgtv1.js
+https://mobile-stream.api.mgtv.com/v1/video/source? url script-request-header https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/MGTV/MGTV.js
+https://nuc.api.mgtv.com/GetUserInfo url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/MGTV/mgtv3.js
+https://mobile-stream.api.mgtv.com/v1/video/source url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/MGTV/mgtv3.js
 
 #港区
-^https://mobile.api.mgtv.com/v8/video/getSource url script-request-header https://raw.githubusercontent.com/zhu-zijie/Scripts/main/QuantumultX/MGTV/MGTV.js
+^https://mobile.api.mgtv.com/v8/video/getSource url script-request-header https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/MGTV/MGTV.js
 
 #mac
-https://pcc.api.mgtv.com/video/getSource url script-request-header https://raw.githubusercontent.com/zhu-zijie/Scripts/main/QuantumultX/MGTV/MGTV.js
+https://pcc.api.mgtv.com/video/getSource url script-request-header https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/MGTV/MGTV.js
 
 #ipad
-https://pad.api.mgtv.com/v8/video/getSource url script-request-header https://raw.githubusercontent.com/zhu-zijie/Scripts/main/QuantumultX/MGTV/MGTV.js
+https://pad.api.mgtv.com/v8/video/getSource url script-request-header https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/MGTV/MGTV.js
 
 [mitm] 
 hostname = *.mgtv.com, pad.api.mgtv.com, pcc.api.mgtv.com

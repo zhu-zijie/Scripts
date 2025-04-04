@@ -2,7 +2,7 @@
   "id": "zijie.app.sub",
   "name": "zijie 脚本订阅",
   "author": "@zijie",
-  "icon": "",
+  "icon": "https://raw.githubusercontent.com/zhu-zijie/Scripts/refs/heads/main/Tests/zijie.png",
   "repo": "https://github.com/zhu-zijie/Scripts",
   "apps": [
     {
@@ -11,8 +11,8 @@
       "descs_html": [
         "<p style='margin-top:20px;font-size:16px;color:#a29bfe;text-align:center;'>健身格言: 每天刷一刷, 健康第一</p>",
         "<p style='margin-left:10px;margin-top:30px;font-size:20px;font-weight:900;'>每次选择一个时间段即可<p>",
-        "<p style='margin-left:10px;margin-top:20px;font-size:12px;'>理性使用</p>",
-        "<p style='margin-left:10px;margin-top:20px;font-size:12px;'>仅供申明</p>"
+        "<p style='margin-left:10px;margin-top:20px;font-size:12px;font-weight:900;'>测试功能</p>",
+        "<p style='margin-left:10px;margin-top:20px;font-size:12px;font-weight:900;'>请勿滥用</p>"
       ],
       "keys": ["time_period", "create_time", "pay_time", "user_name"],
       "settings": [
@@ -68,8 +68,7 @@
       "author": "@zijie",
       "repo": "https://github.com/zhu-zijie/Scripts",
       "icons": [
-        "https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/mi/mini.png",
-        "https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/mi/color.png"
+        "https://raw.githubusercontent.com/zhu-zijie/Scripts/refs/heads/main/cygg/xinda.png"
       ],
       "script": "https://raw.githubusercontent.com/zhu-zijie/Scripts/refs/heads/main/cygg/cyggDetails.js"
     }
