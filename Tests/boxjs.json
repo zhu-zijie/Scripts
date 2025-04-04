@@ -9,10 +9,9 @@
       "id": "zijie.cygg",
       "name": "新大体育馆",
       "descs_html": [
-        "<p style='margin-top:20px;font-size:16px;color:#a29bfe;text-align:center;'>健身格言: 每天刷一刷, 健康第一</p>",
-        "<p style='margin-left:10px;margin-top:30px;font-size:20px;font-weight:900;'>每次选择一个时间段即可<p>",
-        "<p style='margin-left:10px;margin-top:20px;font-size:12px;font-weight:900;'>测试功能</p>",
-        "<p style='margin-left:10px;margin-top:20px;font-size:12px;font-weight:900;'>请勿滥用</p>"
+        "<p style='margin-top:20px;font-size:16px;color:red;text-align:center;'>健康第一，多多锻炼！</p>",
+        "<p style='margin-left:10px;margin-top:20px;font-size:12px;font_align:center;'>测试功能！</p>",
+        "<p style='margin-left:10px;margin-top:20px;font-size:12px;font_align:center;'>请勿滥用！</p>"
       ],
       "keys": [
         "time_period",
@@ -77,8 +76,7 @@
       "icons": [
         "https://raw.githubusercontent.com/zhu-zijie/Scripts/refs/heads/main/cygg/xinda.png",
         "https://raw.githubusercontent.com/zhu-zijie/Scripts/refs/heads/main/cygg/xinda.png"
-      ],
-      "script": "https://raw.githubusercontent.com/zhu-zijie/Scripts/refs/heads/main/cygg/cyggDetails.js"
+      ]
     }
   ]
 }

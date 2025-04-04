@@ -1,6 +1,10 @@
 // 仅供测试使用，禁止用于商业用途
 // 2025-04-02
-
+const $ = new Env("新大体育馆");
+$.isNode() && require("dotenv").config();
+const desiredTime = $.isNode()
+  ? process.env.TIME_PERIOD
+  : $.getdata("time_period") || "19:30-20:30";
 let body = $response.body;
 let jsonData = JSON.parse(body);
 
@@ -12,11 +16,11 @@ const day = String(now.getDate()).padStart(2, "0");
 const currentDate = `${year}-${month}-${day}`;
 
 // 设置可用的时间段
-const timeSlots = ["19:30-20:30", "20:30-21:30", "21:30-22:30"];
+const timeSlots = desiredTime;
 const createTime = "10:30:25";
 
 // 获取需要修改的元素（从索引1开始）
-const elementsToUpdate = jsonData.resultData.content.slice(1, 4);
+const elementsToUpdate = jsonData.resultData.content[1];
 const updatedElements = [];
 
 // 使用循环修改每个元素
