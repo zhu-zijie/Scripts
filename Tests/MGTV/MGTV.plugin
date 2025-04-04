@@ -1,7 +1,7 @@
-#!name = MGTV
-#!desc = 去除广告，播放会员权限
-#!icon = https://github.com/Toperlock/Quantumult/raw/main/icon/Doraemon/Doraemon-1033.png
-#!tag = 共享会员
+#!name=MGTV
+#!desc=去除广告，播放会员权限
+#!icon=https://github.com/Toperlock/Quantumult/raw/main/icon/Doraemon/Doraemon-1033.png
+#!tag=共享会员
 
 [Rewrite]
 #播放页开通提示移除
