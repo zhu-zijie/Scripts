@@ -8,6 +8,9 @@ const desiredTime = $.isNode()
 const createTime = $.isNode()
   ? process.env.CREATE_TIME
   : $.getdata("create_time") || "10:30:00";
+const idserial = $.isNode()
+  ? process.env.IDSERIAL
+  : $.getdata("idserial") || "107552300303";
 
 let body = $response.body;
 let jsonData = JSON.parse(body);
@@ -22,16 +25,19 @@ const currentDate = `${year}-${month}-${day}`;
 
 if (element) {
   // 修改reserveDate为当前日期
-  element.reserveDate = `${currentDate}`;
+  element.reserveDate = currentDate;
 
   // 修改bookingtime格式 "YYYY-MM-DD HH:MM-HH:MM"
   element.bookingtime = `${currentDate} ${desiredTime}`;
 
   // 修改reserveTime数组
-  element.reserveTime = `["${desiredTime}"]`;
+  element.reserveTime = [desiredTime];
 
-  // 修改createdate
+  // 修改创建时间
   element.createdate = `${currentDate} ${createTime}`;
+
+  // 修改学号
+  element.reservationPerson = idserial;
 
   // 打印修改成功信息
   console.log(`订单修改成功：${element.nodename}`);
@@ -44,12 +50,12 @@ if (element) {
       `场馆: ${element.nodename}`,
       `时间: ${currentDate} ${desiredTime}`
     );
-
-    // 转换回JSON字符串
-    body = JSON.stringify(jsonData);
-    $done({ body });
   }
 }
+
+// 转换回JSON字符串
+body = JSON.stringify(jsonData);
+$done({ body });
 
 // 环境配置
 function Env(t, e) {
