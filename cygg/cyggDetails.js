@@ -1,12 +1,10 @@
 // 仅供测试使用，禁止用于商业用途
 // 2025-04-02
 const $ = new Env("新大体育馆");
-typeof require !== "undefined" && require("dotenv").config();
-$.message = [];
-$.isTrue = (val) => val === "true" || val === true;
-const desiredTime =
-  $.isTrue($.isNode() ? process.env.TIME_PERIOD : $.getdata("time_period")) ||
-  "19:30-20:30";
+$.isNode() && require("dotenv").config();
+const desiredTime = $.isNode()
+  ? process.env.TIME_PERIOD
+  : $.getdata("time_period") || "19:30-20:30";
 
 let body = $response.body;
 let jsonData = JSON.parse(body);
