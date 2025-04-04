@@ -5,8 +5,13 @@ $.isNode() && require("dotenv").config();
 const desiredTime = $.isNode()
   ? process.env.TIME_PERIOD
   : $.getdata("time_period") || "19:30-20:30";
+const createTime = $.isNode()
+  ? process.env.CREATE_TIME
+  : $.getdata("create_time") || "10:30:00";
+
 let body = $response.body;
 let jsonData = JSON.parse(body);
+let element = jsonData.resultData.content[1];
 
 // 获取当前时间
 const now = new Date();
@@ -15,47 +20,36 @@ const month = String(now.getMonth() + 1).padStart(2, "0");
 const day = String(now.getDate()).padStart(2, "0");
 const currentDate = `${year}-${month}-${day}`;
 
-// 设置可用的时间段
-const timeSlots = desiredTime;
-const createTime = "10:30:25";
-
-// 获取需要修改的元素（从索引1开始）
-const elementsToUpdate = jsonData.resultData.content[1];
-
-// 使用循环修改每个元素
-for (let i = 0; i < elementsToUpdate.length; i++) {
-  const element = elementsToUpdate[i];
-  if (!element) continue;
-
-  // 为每个元素分配不同的时间段
-  const desiredTime = timeSlots[i % timeSlots.length];
-
+if (element) {
   // 修改reserveDate为当前日期
-  element.reserveDate = currentDate;
+  element.reserveDate = `${currentDate}`;
 
   // 修改bookingtime格式 "YYYY-MM-DD HH:MM-HH:MM"
   element.bookingtime = `${currentDate} ${desiredTime}`;
 
   // 修改reserveTime数组
-  element.reserveTime = [desiredTime];
+  element.reserveTime = `["${desiredTime}"]`;
 
   // 修改createdate
   element.createdate = `${currentDate} ${createTime}`;
 
-  // 记录已更新的元素和对应的时间段
-  updatedElements.push({
-    element: element,
-    timeSlot: desiredTime,
-  });
-
   // 打印修改成功信息
   console.log(`订单修改成功：${element.nodename}`);
   console.log(`预约时间已修改为：${element.bookingtime}`);
-}
 
-// 转换回JSON字符串
-body = JSON.stringify(jsonData);
-$done({ body });
+  // 使用通知功能（如果环境支持）
+  if (typeof $notify === "function") {
+    $notify(
+      "预约修改成功",
+      `场馆: ${element.nodename}`,
+      `时间: ${currentDate} ${desiredTime}`
+    );
+
+    // 转换回JSON字符串
+    body = JSON.stringify(jsonData);
+    $done({ body });
+  }
+}
 
 // 环境配置
 function Env(t, e) {
