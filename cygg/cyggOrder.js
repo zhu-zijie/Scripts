@@ -21,7 +21,6 @@ const createTime = "10:30:25";
 
 // 获取需要修改的元素（从索引1开始）
 const elementsToUpdate = jsonData.resultData.content[1];
-const updatedElements = [];
 
 // 使用循环修改每个元素
 for (let i = 0; i < elementsToUpdate.length; i++) {
@@ -52,20 +51,6 @@ for (let i = 0; i < elementsToUpdate.length; i++) {
   // 打印修改成功信息
   console.log(`订单修改成功：${element.nodename}`);
   console.log(`预约时间已修改为：${element.bookingtime}`);
-}
-
-if (typeof $notify === "function" && updatedElements.length > 0) {
-  const venueInfo = updatedElements
-    .map(
-      (item, index) =>
-        `场馆${index + 1}: ${item.element.nodename} (${item.timeSlot})`
-    )
-    .join("\n");
-
-  $notify(
-    `已修改 ${updatedElements.length} 个预约`,
-    `时间: ${currentDate}\n${venueInfo}`
-  );
 }
 
 // 转换回JSON字符串
