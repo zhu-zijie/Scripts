@@ -15,3 +15,4 @@ http-response ^https:\/\/cgyy\.xju\.edu\.cn\/service\/appointment\/appointment\/
 
 [mitm]
 hostname = cgyy.xju.edu.cn
+$argument.desiredTime ||
