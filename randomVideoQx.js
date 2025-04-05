@@ -1,6 +1,6 @@
 /*
 [rewrite_local]
-^https?:zijier\.top url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/randomVideoQx.js
+^https?:\/\/zijier\.top url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/randomVideoQx.js
 [mitm]
 hostname = zijier.top
 */
