@@ -1,7 +1,6 @@
 /*
-随机短视频播放器
 [rewrite_local]
-^https?:\/\/zijier\.com url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/randomVideoQx.js
+https:\/\/zijier\.com url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/randomVideoQx.js
 [mitm]
 hostname = zijier.com
 */
