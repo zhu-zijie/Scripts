@@ -20,12 +20,21 @@ function serveHTML() {
         border-radius: 5px; font-size: 12px; opacity: 0.7; z-index: 5;
       }
       .hidden {display: none;}
+      #logArea {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: rgba(255,255,255,0.7);
+        font-size: 12px;
+        z-index: 100;
+      }
     </style>
   </head>
   <body>
     <video id="video" playsinline webkit-playsinline controls></video>
     <button id="playButton">开始播放</button>
     <div id="status" class="status hidden"></div>
+    <div id="logArea"></div>
   
     <script>
       const channelAddr = [
@@ -36,6 +45,7 @@ function serveHTML() {
       const videoElement = document.getElementById('video');
       const playButton = document.getElementById('playButton');
       const status = document.getElementById('status');
+      const logArea = document.getElementById('logArea');
       
       // 记录视频链接到界面和控制台
       function logVideoUrl(url) {
@@ -43,9 +53,16 @@ function serveHTML() {
         // 记录到页面上
         const now = new Date().toLocaleTimeString();
         logArea.innerHTML += \`\${now}: \${url}<br>\`;
+        
+        // try {
+        //   if (typeof $notify === 'function') {
+        //     $notify("随机视频", "正在播放新视频", url);
+        //   }
+        // } catch(e) {
+        //   console.log("通知发送失败");
+        // }
       }
       
-
       function showStatus(msg, autoHide = true) {
         status.textContent = msg;
         status.classList.remove('hidden');
@@ -64,6 +81,8 @@ function serveHTML() {
         
         const url = channelAddr[Math.floor(Math.random() * channelAddr.length)];
         videoElement.src = url;
+        
+        // 记录视频链接
         logVideoUrl(url);
         
         videoElement.play().then(() => {
@@ -106,5 +125,6 @@ function serveHTML() {
   $done(response);
 }
 
-console.log("随机短视频播放器脚本已加载");
+// 运行脚本时记录
+console.log("随机视频脚本已执行");
 serveHTML();
