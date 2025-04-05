@@ -21,8 +21,24 @@
       ],
       "settings": [
         {
-          "id": "time_period",
-          "name": "时间段",
+          "id": "user_name",
+          "name": "姓名",
+          "val": null,
+          "type": "text",
+          "rows": 1,
+          "desc": "置空默认不修改"
+        },
+        {
+          "id": "id_serial",
+          "name": "学号",
+          "val": null,
+          "type": "text",
+          "rows": 1,
+          "desc": "置空默认不修改"
+        },
+        {
+          "id": "pay_phone",
+          "name": "手机号",
           "val": null,
           "type": "text",
           "rows": 1,
@@ -45,24 +61,8 @@
           "desc": "置空默认不修改"
         },
         {
-          "id": "user_name",
-          "name": "姓名",
-          "val": null,
-          "type": "text",
-          "rows": 1,
-          "desc": "置空默认不修改"
-        },
-        {
-          "id": "pay_phone",
-          "name": "手机号",
-          "val": null,
-          "type": "text",
-          "rows": 1,
-          "desc": "置空默认不修改"
-        },
-        {
-          "id": "id_serial",
-          "name": "学号",
+          "id": "time_period",
+          "name": "时间段",
           "val": null,
           "type": "text",
           "rows": 1,
