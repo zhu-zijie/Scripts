@@ -4,22 +4,22 @@ const $ = new Env("新大体育馆");
 $.isNode() && require("dotenv").config();
 const desiredTime = $.isNode()
   ? process.env.TIME_PERIOD
-  : $.getdata("time_period") || "10:30-20:30";
+  : $.getdata("time_period") || $argument.desiredTime;
 const createTime = $.isNode()
   ? process.env.CREATE_TIME
-  : $.getdata("create_time") || "10:30:00";
+  : $.getdata("create_time") || $argument.createTime;
 const payTime = $.isNode()
   ? process.env.PAY_TIME
-  : $.getdata("pay_time") || "10:32:15";
+  : $.getdata("pay_time") || $argument.payTime;
 const username = $.isNode()
   ? process.env.USER_NAME
-  : $.getdata("user_name") || "祝子杰";
+  : $.getdata("user_name") || $argument.userName;
 const payphone = $.isNode()
   ? process.env.PAY_PHONE
-  : $.getdata("pay_phone") || "15623109116";
+  : $.getdata("pay_phone") || $argument.payPhone;
 const idserial = $.isNode()
   ? process.env.IDSERIAL
-  : $.getdata("idserial") || "107552300303";
+  : $.getdata("id_serial") || $argument.idSerial;
 
 let body = $response.body;
 let jsonData = JSON.parse(body);

@@ -4,13 +4,13 @@ const $ = new Env("新大体育馆");
 $.isNode() && require("dotenv").config();
 const desiredTime = $.isNode()
   ? process.env.TIME_PERIOD
-  : $.getdata("time_period") || "19:30-20:30";
+  : $.getdata("time_period") || $argument.desiredTime;
 const createTime = $.isNode()
   ? process.env.CREATE_TIME
-  : $.getdata("create_time") || "10:30:00";
+  : $.getdata("create_time") || $argument.createTime;
 const idserial = $.isNode()
   ? process.env.IDSERIAL
-  : $.getdata("idserial") || "107552300303";
+  : $.getdata("idserial") || $argument.idSerial;
 
 let body = $response.body;
 let jsonData = JSON.parse(body);
@@ -43,14 +43,12 @@ if (element) {
   console.log(`订单修改成功：${element.nodename}`);
   console.log(`预约时间已修改为：${element.bookingtime}`);
 
-  // 使用通知功能（如果环境支持）
-  if (typeof $notify === "function") {
-    $notify(
-      "预约修改成功",
-      `场馆: ${element.nodename}`,
-      `时间: ${currentDate} ${desiredTime}`
-    );
-  }
+  // 通知
+  $.msg(
+    "预约修改成功",
+    `场馆: ${element.nodename}`,
+    `时间: ${currentDate} ${desiredTime}`
+  );
 }
 
 // 转换回JSON字符串
