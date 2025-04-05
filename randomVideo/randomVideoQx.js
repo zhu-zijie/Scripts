@@ -1,45 +1,99 @@
-// 添加调试信息
-console.log("脚本被执行");
+function serveHTML() {
+  const html = `
+  <!DOCTYPE html>
+  <html lang="zh">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机短视频播放器</title>
+    <style>
+      body, html { margin: 0; padding: 0; height: 100%; background-color: black; }
+      video { width: 100%; height: 100%; object-fit: contain; }
+      #playButton {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        padding: 10px 20px; font-size: 16px; background-color: white;
+        border: none; border-radius: 4px; cursor: pointer;
+      }
+      .status {
+        position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+        color: white; background: rgba(0,0,0,0.5); padding: 5px 10px;
+        border-radius: 5px; font-size: 12px; opacity: 0.7; z-index: 5;
+      }
+      .hidden {display: none;}
+    </style>
+  </head>
+  <body>
+    <video id="video" playsinline webkit-playsinline controls></video>
+    <button id="playButton">开始播放</button>
+    <div id="status" class="status hidden"></div>
+  
+    <script>
+      const channelAddr = [
+        "http://api.qemao.com/api/douyin",
+        "https://api.kuleu.com/api/MP4_xiaojiejie"
+      ];
+      
+      const videoElement = document.getElementById('video');
+      const playButton = document.getElementById('playButton');
+      const status = document.getElementById('status');
+      
+      function showStatus(msg, autoHide = true) {
+        status.textContent = msg;
+        status.classList.remove('hidden');
+        if (autoHide) {
+          setTimeout(() => { status.classList.add('hidden'); }, 3000);
+        }
+      }
+  
+      playButton.addEventListener('click', () => {
+        playRandomVideo();
+        playButton.style.display = 'none';
+      });
+  
+      function playRandomVideo() {
+        showStatus('正在加载视频...', false);
+        
+        const url = channelAddr[Math.floor(Math.random() * channelAddr.length)];
+        videoElement.src = url;
+        
+        videoElement.play().then(() => {
+          showStatus("正在播放: " + url);
+        }).catch(error => {
+          console.error("播放错误:", error);
+          showStatus('播放失败，尝试下一个...');
+          setTimeout(playRandomVideo, 1000);
+        });
+      }
+  
+      videoElement.addEventListener('ended', playRandomVideo);
+      
+      videoElement.addEventListener('error', function() {
+        showStatus('视频加载失败，尝试下一个...');
+        setTimeout(playRandomVideo, 1000);
+      });
+      
+      videoElement.addEventListener('click', function() {
+        if (playButton.style.display === 'none') {
+          if (videoElement.paused) {
+            videoElement.play();
+          } else {
+            videoElement.pause();
+          }
+        }
+      });
+    </script>
+  </body>
+  </html>`;
 
-// 从远程加载HTML
-function loadRemoteHTML() {
-  // 替换为您的远程HTML文件URL
-  const remoteURL =
-    "https://raw.githubusercontent.com/zhu-zijie/Scripts/main/randomVideo/randomVideo.html";
+  const response = {
+    status: "HTTP/1.1 200 OK",
+    headers: {
+      "Content-Type": "text/html;charset=UTF-8",
+    },
+    body: html,
+  };
 
-  $httpClient.get(remoteURL, function (error, response, data) {
-    if (error) {
-      console.log("加载远程HTML失败:", error);
-      // 加载失败时返回错误信息
-      const errorResponse = {
-        status: "HTTP/1.1 500 Internal Server Error",
-        headers: { "Content-Type": "text/html" },
-        body:
-          "<html><body><h1>无法加载视频播放器</h1><p>错误信息: " +
-          error +
-          "</p></body></html>",
-      };
-      $done(errorResponse);
-      return;
-    }
-
-    // 成功获取远程HTML
-    console.log("成功加载远程HTML");
-    const htmlResponse = {
-      status: "HTTP/1.1 200 OK",
-      headers: { "Content-Type": "text/html;charset=UTF-8" },
-      body: data,
-    };
-
-    $done(htmlResponse);
-  });
+  $done(response);
 }
 
-// 如果请求存在，记录请求信息
-if ($request) {
-  console.log("请求URL:", $request.url);
-  console.log("请求方法:", $request.method);
-}
-
-// 执行远程HTML加载
-loadRemoteHTML();
+serveHTML();
