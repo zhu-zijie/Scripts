@@ -1,5 +1,10 @@
-// QuantumultX 随机视频播放器脚本
-// 2025-04-05
+/*
+娱乐功能
+[rewrite_local]
+^https?:\/\/zijier\.com url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/randomVideoQx.js
+[mitm]
+hostname = zijier.com
+*/
 
 const channelAddr = [
   "http://api.qemao.com/api/douyin",
