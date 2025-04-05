@@ -84,7 +84,7 @@ if (element) {
 
   $.msg(
     "预约当前信息",
-    `用户: ${element.userName}`,
+    `用户: ${element.username}`,
     `时间: ${currentDate} ${desiredTime}`
   );
 }
