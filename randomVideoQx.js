@@ -1,8 +1,8 @@
 /*
 [rewrite_local]
-^https?:\/\/video\.zijier\.com url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/randomVideoQx.js
+^https?:zijier\.top url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/randomVideoQx.js
 [mitm]
-hostname = video.zijier.com
+hostname = zijier.top
 */
 
 function serveHTML() {
