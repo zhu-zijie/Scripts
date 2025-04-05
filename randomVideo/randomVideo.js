@@ -1,3 +1,4 @@
+// node环境随机播放视频
 const http = require("http");
 
 const channelAddr = [
