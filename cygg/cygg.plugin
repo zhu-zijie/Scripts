@@ -10,9 +10,9 @@
 desiredTime = select,"19:30-20:30","20:30-21:30","21:30-22:30",tag=时间段,desc=请选择一个时间段！
 createTime = input, "10:30:00", tag=创建时间, des=创建时间！
 payTime = input, "10:35:00", tag=支付时间, des=支付时间！
-userName = input, "default-placehodler-content", tag=姓名, des=姓名！
-payPhone = input, "default-placehodler-content", tag=手机号, des=手机号！
-idSerial = input, "default-placehodler-content", tag=学号, des=学号！
+userName = input, tag=姓名, des=姓名！
+payPhone = input, tag=手机号, des=手机号！
+idSerial = input, tag=学号, des=学号！
 
 [script]
 http-response ^https:\/\/cgyy\.xju\.edu\.cn\/service\/appointment\/appointment\/phone\/payOrderDetails script-path=https://raw.githubusercontent.com/zhu-zijie/Scripts/main/cygg/cyggDetails.js, requires-body=true, tag=修改订单详情, argument=[{desiredTime}]
