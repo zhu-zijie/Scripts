@@ -2,28 +2,35 @@
 // 2025-04-02
 const $ = new Env("新大体育馆");
 $.isNode() && require("dotenv").config();
-const desiredTime = $.isNode()
+let desiredTime = $.isNode()
   ? process.env.TIME_PERIOD
-  : $.getdata("time_period") || $argument.desiredTime;
-const createTime = $.isNode()
+  : $.getdata("timePeriod") || $argument.desiredTime;
+let createTime = $.isNode()
   ? process.env.CREATE_TIME
-  : $.getdata("create_time") || $argument.createTime;
-const payTime = $.isNode()
+  : $.getdata("createTime") || $argument.createTime;
+let payTime = $.isNode()
   ? process.env.PAY_TIME
-  : $.getdata("pay_time") || $argument.payTime;
-const username = $.isNode()
+  : $.getdata("payTime") || $argument.payTime;
+let userName = $.isNode()
   ? process.env.USER_NAME
-  : $.getdata("user_name") || $argument.userName;
-const payphone = $.isNode()
+  : $.getdata("userName") || $argument.userName;
+let payPhone = $.isNode()
   ? process.env.PAY_PHONE
-  : $.getdata("pay_phone") || $argument.payPhone;
-const idserial = $.isNode()
+  : $.getdata("payPhone") || $argument.payPhone;
+let idSerial = $.isNode()
   ? process.env.ID_SERIAL
-  : $.getdata("id_serial") || $argument.idSerial;
+  : $.getdata("idSerial") || $argument.idSerial;
 
 let body = $response.body;
-let jsonData = JSON.parse(body);
-let element = jsonData.resultData;
+let jsonData, element;
+try {
+  jsonData = JSON.parse(body);
+  element = jsonData.resultData;
+} catch (error) {
+  console.error("解析失败：", error);
+  $done({ body: body });
+  return;
+}
 
 // 获取当前日期
 const now = new Date();
@@ -40,35 +47,48 @@ const yesterdayMonth = String(yesterday.getMonth() + 1).padStart(2, "0");
 const yesterdayDay = String(yesterday.getDate()).padStart(2, "0");
 const yesterdayDate = `${yesterdayYear}-${yesterdayMonth}-${yesterdayDay}`;
 
+function isNotEmpty(value) {
+  return value !== undefined && value !== null && value !== "";
+}
+
 if (element) {
-  // 修改reserveDate为当前日期
-  element.paytime = `${yesterdayDate} ${payTime}`;
+  if (isNotEmpty(desiredTime)) {
+    element.bookingtime = `${currentDate} ${desiredTime}`;
+    console.log(`预约时间：${element.bookingtime}`);
+  }
 
-  // 修改bookingtime格式 "YYYY-MM-DD HH:MM-HH:MM"
-  element.bookingtime = `${currentDate} ${desiredTime}`;
+  if (isNotEmpty(payTime)) {
+    element.paytime = `${yesterdayDate} ${payTime}`;
+    console.log(`支付时间：${element.paytime}`);
+  }
 
-  // 修改createdate
-  element.createdate = `${yesterdayDate} ${createTime}`;
+  if (isNotEmpty(createTime)) {
+    element.createdate = `${yesterdayDate} ${createTime}`;
+    console.log(`创建时间：${element.createdate}`);
+  }
 
-  // 修改姓名
-  element.username = `${username}`;
+  if (isNotEmpty(userName)) {
+    element.username = userName;
+    console.log(`姓名：${element.username}`);
+  }
 
-  // 修改手机号
-  element.payphone = `${payphone}`;
+  if (isNotEmpty(payPhone)) {
+    element.payphone = payPhone;
+    console.log(`手机号：${element.payphone}`);
+  }
 
-  // 修改学号
-  element.idserial = `${idserial}`;
+  if (isNotEmpty(idSerial)) {
+    element.idserial = idSerial;
+    console.log(`学号：${element.idserial}`);
+  }
 
-  // 打印修改成功信息
-  console.log(`订单修改成功：${element.username}`);
-  console.log(`预约时间已修改为：${element.bookingtime}`);
-
-  // 通知
-  $.msg(
-    "预约修改成功",
-    `用户: ${element.username}`,
-    `时间: ${currentDate} ${desiredTime}`
-  );
+  if (isNotEmpty(desiredTime)) {
+    $.msg(
+      "预约当前信息",
+      `用户: ${element.userName}`,
+      `时间: ${currentDate} ${desiredTime}`
+    );
+  }
 }
 
 // 转换回JSON字符串

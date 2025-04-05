@@ -12,16 +12,16 @@
         "<p style='margin-top:20px;font-size:16px;color:red;text-align:center;'>健康第一，多多锻炼！</p>"
       ],
       "keys": [
-        "time_period",
-        "create_time",
-        "pay_time",
-        "user_name",
-        "pay_phone",
-        "id_serial"
+        "timePeriod",
+        "createTime",
+        "payTime",
+        "userName",
+        "payPhone",
+        "idSerial"
       ],
       "settings": [
         {
-          "id": "user_name",
+          "id": "userName",
           "name": "姓名",
           "val": null,
           "type": "text",
@@ -29,7 +29,7 @@
           "desc": "置空默认不修改"
         },
         {
-          "id": "id_serial",
+          "id": "idSerial",
           "name": "学号",
           "val": null,
           "type": "text",
@@ -37,7 +37,7 @@
           "desc": "置空默认不修改"
         },
         {
-          "id": "pay_phone",
+          "id": "payPhone",
           "name": "手机号",
           "val": null,
           "type": "text",
@@ -45,7 +45,7 @@
           "desc": "置空默认不修改"
         },
         {
-          "id": "create_time",
+          "id": "createTime",
           "name": "创建时间",
           "val": null,
           "type": "text",
@@ -53,7 +53,7 @@
           "desc": "置空默认不修改"
         },
         {
-          "id": "pay_time",
+          "id": "payTime",
           "name": "支付时间",
           "val": null,
           "type": "text",
@@ -61,7 +61,7 @@
           "desc": "置空默认不修改"
         },
         {
-          "id": "time_period",
+          "id": "timePeriod",
           "name": "时间段",
           "val": null,
           "type": "text",

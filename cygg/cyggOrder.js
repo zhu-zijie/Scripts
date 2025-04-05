@@ -2,19 +2,26 @@
 // 2025-04-02
 const $ = new Env("新大体育馆");
 $.isNode() && require("dotenv").config();
-const desiredTime = $.isNode()
+let desiredTime = $.isNode()
   ? process.env.TIME_PERIOD
-  : $.getdata("time_period") || $argument.desiredTime;
-const createTime = $.isNode()
+  : $.getdata("timePeriod") || $argument.desiredTime;
+let createTime = $.isNode()
   ? process.env.CREATE_TIME
-  : $.getdata("create_time") || $argument.createTime;
-const idserial = $.isNode()
+  : $.getdata("createTime") || $argument.createTime;
+let idSerial = $.isNode()
   ? process.env.ID_SERIAL
-  : $.getdata("id_serial") || $argument.idSerial;
+  : $.getdata("idSerial") || $argument.idSerial;
 
 let body = $response.body;
-let jsonData = JSON.parse(body);
-let element = jsonData.resultData.content[1];
+let jsonData, element;
+try {
+  jsonData = JSON.parse(body);
+  element = jsonData.resultData.content[1];
+} catch (error) {
+  console.error("解析失败：", error);
+  $done({ body: body });
+  return;
+}
 
 // 获取当前时间
 const now = new Date();
@@ -23,32 +30,38 @@ const month = String(now.getMonth() + 1).padStart(2, "0");
 const day = String(now.getDate()).padStart(2, "0");
 const currentDate = `${year}-${month}-${day}`;
 
+function isNotEmpty(value) {
+  return value !== undefined && value !== null && value !== "";
+}
+
 if (element) {
-  // 修改reserveDate为当前日期
   element.reserveDate = currentDate;
+  console.log(`预约日期：${element.reserveDate}`);
 
-  // 修改bookingtime格式 "YYYY-MM-DD HH:MM-HH:MM"
-  element.bookingtime = `${currentDate} ${desiredTime}`;
+  if (isNotEmpty(desiredTime)) {
+    element.bookingtime = `${currentDate} ${desiredTime}`;
+    console.log(`预约时间：${element.bookingtime}`);
+    element.reserveTime = [desiredTime];
+    console.log(`时间段：${element.reserveTime}`);
+  }
 
-  // 修改reserveTime数组
-  element.reserveTime = [desiredTime];
+  if (isNotEmpty(createTime)) {
+    element.createdate = `${currentDate} ${createTime}`;
+    console.log(`创建时间：${element.createdate}`);
+  }
 
-  // 修改创建时间
-  element.createdate = `${currentDate} ${createTime}`;
+  if (isNotEmpty(idSerial)) {
+    element.reservationPerson = idSerial;
+    console.log(`学号：${element.reservationPerson}`);
+  }
 
-  // 修改学号
-  element.reservationPerson = idserial;
-
-  // 打印修改成功信息
-  console.log(`订单修改成功：${element.nodename}`);
-  console.log(`预约时间已修改为：${element.bookingtime}`);
-
-  // 通知
-  $.msg(
-    "预约修改成功",
-    `场馆: ${element.nodename}`,
-    `时间: ${currentDate} ${desiredTime}`
-  );
+  if (isNotEmpty(desiredTime)) {
+    $.msg(
+      "预约修改成功",
+      `场馆: ${element.nodename}`,
+      `时间: ${currentDate} ${desiredTime}`
+    );
+  }
 }
 
 // 转换回JSON字符串
