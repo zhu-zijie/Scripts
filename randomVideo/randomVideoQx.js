@@ -37,6 +37,15 @@ function serveHTML() {
       const playButton = document.getElementById('playButton');
       const status = document.getElementById('status');
       
+      // 记录视频链接到界面和控制台
+      function logVideoUrl(url) {
+        console.log("播放链接: " + url);
+        // 记录到页面上
+        const now = new Date().toLocaleTimeString();
+        logArea.innerHTML += \`\${now}: \${url}<br>\`;
+      }
+      
+
       function showStatus(msg, autoHide = true) {
         status.textContent = msg;
         status.classList.remove('hidden');
@@ -55,6 +64,7 @@ function serveHTML() {
         
         const url = channelAddr[Math.floor(Math.random() * channelAddr.length)];
         videoElement.src = url;
+        logVideoUrl(url);
         
         videoElement.play().then(() => {
           showStatus("正在播放: " + url);
@@ -96,4 +106,5 @@ function serveHTML() {
   $done(response);
 }
 
+console.log("随机短视频播放器脚本已加载");
 serveHTML();
