@@ -18,7 +18,7 @@ const payphone = $.isNode()
   ? process.env.PAY_PHONE
   : $.getdata("pay_phone") || $argument.payPhone;
 const idserial = $.isNode()
-  ? process.env.IDSERIAL
+  ? process.env.ID_SERIAL
   : $.getdata("id_serial") || $argument.idSerial;
 
 let body = $response.body;

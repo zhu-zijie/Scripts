@@ -9,8 +9,8 @@ const createTime = $.isNode()
   ? process.env.CREATE_TIME
   : $.getdata("create_time") || $argument.createTime;
 const idserial = $.isNode()
-  ? process.env.IDSERIAL
-  : $.getdata("idserial") || $argument.idSerial;
+  ? process.env.ID_SERIAL
+  : $.getdata("id_serial") || $argument.idSerial;
 
 let body = $response.body;
 let jsonData = JSON.parse(body);
