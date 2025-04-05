@@ -82,7 +82,7 @@ if (element) {
     console.log(`学号：${element.idserial}`);
   }
 
-  if (isNotEmpty(desiredTime)) {
+  if (isNotEmpty(desiredTime) && isNotEmpty(userName)) {
     $.msg(
       "预约当前信息",
       `用户: ${element.userName}`,
