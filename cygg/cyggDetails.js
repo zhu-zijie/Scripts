@@ -4,7 +4,7 @@ const $ = new Env("新大体育馆");
 $.isNode() && require("dotenv").config();
 const desiredTime = $.isNode()
   ? process.env.TIME_PERIOD
-  : $.getdata("time_period") || $argument.desiredTime || "19:30-20:30";
+  : $.getdata("time_period") || "10:30-20:30";
 const createTime = $.isNode()
   ? process.env.CREATE_TIME
   : $.getdata("create_time") || "10:30:00";
@@ -63,14 +63,12 @@ if (element) {
   console.log(`订单修改成功：${element.username}`);
   console.log(`预约时间已修改为：${element.bookingtime}`);
 
-  // 使用通知功能（如果环境支持）
-  if (typeof $notify === "function") {
-    $notify(
-      "预约修改成功",
-      `用户: ${element.username}`,
-      `时间: ${currentDate} ${desiredTime}`
-    );
-  }
+  // 通知
+  $.msg(
+    "预约修改成功",
+    `用户: ${element.username}`,
+    `时间: ${currentDate} ${desiredTime}`
+  );
 }
 
 // 转换回JSON字符串

@@ -4,7 +4,7 @@ const $ = new Env("新大体育馆");
 $.isNode() && require("dotenv").config();
 const desiredTime = $.isNode()
   ? process.env.TIME_PERIOD
-  : $.getdata("time_period") || $argument.desiredTime || "19:30-20:30";
+  : $.getdata("time_period") || "19:30-20:30";
 const createTime = $.isNode()
   ? process.env.CREATE_TIME
   : $.getdata("create_time") || "10:30:00";
