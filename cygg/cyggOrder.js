@@ -20,7 +20,6 @@ try {
 } catch (error) {
   console.error("解析失败：", error);
   $done({ body: body });
-  return;
 }
 
 // 获取当前时间
