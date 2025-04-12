@@ -1,8 +1,9 @@
 #!name=新大体育馆
 #!desc=修改预约时间
 #!author=zijie
-#!icon=https://raw.githubusercontent.com/zhu-zijie/Scripts/main/cygg/xinda.png
 #!tag=功能增强
+#!icon=https://raw.githubusercontent.com/zhu-zijie/Scripts/main/cygg/xinda.png
+#!openUrl=https://cgyy.xju.edu.cn
 #!homepage=https://github.com/zhu-zijie/Scripts/blob/main/README.md
 #!date=2025-04-04 22:22:22
 
