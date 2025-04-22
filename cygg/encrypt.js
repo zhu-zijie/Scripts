@@ -15,18 +15,18 @@ function Encrypt(e) {
   return o.ciphertext.toString().toUpperCase();
 }
 
-function Decrypt(e) {
-  var n = a.enc.Hex.parse(e);
-  var o = a.enc.Base64.stringify(n);
-  var r = a.AES.decrypt(o, t, {
-    iv: i,
-    mode: a.mode.CBC,
-    padding: a.pad.Pkcs7,
-  });
-  var s = r.toString(a.enc.Utf8);
-  return s.toString();
-}
+// function Decrypt(e) {
+//   var n = a.enc.Hex.parse(e);
+//   var o = a.enc.Base64.stringify(n);
+//   var r = a.AES.decrypt(o, t, {
+//     iv: i,
+//     mode: a.mode.CBC,
+//     padding: a.pad.Pkcs7,
+//   });
+//   var s = r.toString(a.enc.Utf8);
+//   return s.toString();
+// }
 
-data = { bookingno: "填自己的" };
+let data = { bookingno: "填自己的" };
 
 console.log(Encrypt(JSON.stringify(data)));

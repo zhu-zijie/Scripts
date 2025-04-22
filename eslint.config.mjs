@@ -11,6 +11,7 @@ const proxyScriptGlobals = {
   $task: "readonly",
   $done: "readonly",
   $response: "readonly",
+  $request: "readonly",
   $argument: "readonly",
   $notification: "readonly",
   $notify: "readonly",
