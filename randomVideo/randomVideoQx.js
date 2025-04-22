@@ -1,3 +1,11 @@
+/*
+随机视频，仅供娱乐！
+[rewrite_local]
+^https?:\/\/www\.baidu\.com url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/randomVideo/randomVideoQx.js
+[mitm]
+hostname = baidu.com
+*/
+
 function serveHTML() {
   const html = `
   <!DOCTYPE html>
