@@ -1,4 +1,4 @@
-var obj = JSON.parse(body);
+let obj = JSON.parse(body);
 obj.data.isVip = 1;
 obj.data.vipExpiretime = 324938345490000;
 obj.data.vipinfo.isvip = 1;
