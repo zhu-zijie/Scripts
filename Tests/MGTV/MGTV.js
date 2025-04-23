@@ -33,13 +33,13 @@ let updatedUrl = url;
 if (url.includes("video/getSource"))
   updatedUrl = url.replace(
     /([?&]ticket=)\w{32}/,
-    "$1" + "4F0342C744893BC5BE2EE7BEFFB0DAFD"
+    "4F0342C744893BC5BE2EE7BEFFB0DAFD"
   );
 else
   url.includes("video/source") &&
     (updatedUrl = url.replace(
       /([?&]ticket=)\w{32}/,
-      "$1" + "4F0342C744893BC5BE2EE7BEFFB0DAFD"
+      "4F0342C744893BC5BE2EE7BEFFB0DAFD"
     ));
 $done({
   url: updatedUrl,
