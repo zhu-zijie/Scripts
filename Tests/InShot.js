@@ -1,5 +1,13 @@
-var body = JSON.parse($response.body);
-var bundle_id = body.receipt.bundle_id;
+/**********************************************
+[rewrite_local]
+# InShot
+^https:\/\/buy\.itunes\.apple\.com\/verifyReceipt url script-response-body https://raw.githubusercontent.com/I-am-R-E/QuantumultX/main/JavaScript/InShot.js
+[mitm]
+hostname = buy.itunes.apple.com
+**********************************************/
+
+let body = JSON.parse($response.body);
+let bundle_id = body.receipt.bundle_id;
 if (bundle_id == "com.camerasideas.InstaShot") {
   body = {
     status: 0,
