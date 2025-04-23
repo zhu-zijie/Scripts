@@ -8,6 +8,7 @@ hostname = buy.itunes.apple.com
 
 let body = JSON.parse($response.body);
 let bundle_id = body.receipt.bundle_id;
+
 if (bundle_id == "com.camerasideas.InstaShot") {
   body = {
     status: 0,
