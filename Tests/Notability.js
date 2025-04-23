@@ -1,6 +1,6 @@
 /******************************
 [rewrite_local]
-^https?:\/\/notability\.com\/global url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/Notability/Notability1.js
+^https?:\/\/notability\.com\/global url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/Notability.js
 [mitm]
 hostname = notability.com
 *******************************/
@@ -10,24 +10,25 @@ let body = JSON.parse($response.body);
 body = {
   data: {
     processAppleReceipt: {
+      __typename: "SubscriptionResult",
       error: 0,
       subscription: {
+        __typename: "AppStoreSubscription",
+        status: "active",
+        originalPurchaseDate: "2024-09-19T09:27:35.000Z",
+        originalTransactionId: "570001185968888",
+        expirationDate: "9999-12-31T23:59:59.000Z",
         productId: "com.gingerlabs.Notability.premium_subscription",
-        originalTransactionId: "570001184068302",
         tier: "premium",
         refundedDate: null,
         refundedReason: null,
         isInBillingRetryPeriod: false,
-        expirationDate: "2099-09-09T09:09:09.000Z",
         gracePeriodExpiresAt: null,
-        overDeviceLimit: false,
         expirationIntent: "CUSTOMER_CANCELLED",
-        __typename: "AppStoreSubscription",
+        overDeviceLimit: false,
         user: null,
-        status: "canceled",
-        originalPurchaseDate: "2022-09-09T09:09:09.000Z",
       },
-      __typename: "SubscriptionResult",
+      isClassic: false,
     },
   },
 };
