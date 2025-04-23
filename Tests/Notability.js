@@ -28,7 +28,7 @@ body = {
         overDeviceLimit: false,
         user: null,
       },
-      isClassic: false,
+      isClassic: true,
     },
   },
 };
