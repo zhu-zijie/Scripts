@@ -1,7 +1,7 @@
 /**********************************************
 [rewrite_local]
 # InShot
-^https:\/\/buy\.itunes\.apple\.com\/verifyReceipt url script-response-body https://raw.githubusercontent.com/I-am-R-E/QuantumultX/main/JavaScript/InShot.js
+^https:\/\/buy\.itunes\.apple\.com\/verifyReceipt url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/InShot.js
 [mitm]
 hostname = buy.itunes.apple.com
 **********************************************/
