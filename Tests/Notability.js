@@ -1,6 +1,6 @@
 /******************************
 [rewrite_local]
-^https?:\/\/notability\.com\/global url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/Notability.js
+^https?:\/\/notability\.com\/(global|subscriptions) url script-response-body https://raw.githubusercontent.com/zhu-zijie/Scripts/main/Tests/Notability.js
 [mitm]
 hostname = notability.com
 *******************************/
