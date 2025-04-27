@@ -27,6 +27,8 @@ function Encrypt(e) {
 //   return s.toString();
 // }
 
-let data = { bookingno: "填自己的" };
+// const detailData = { bookingno: "填自己的" };
+// console.log(Encrypt(JSON.stringify(detailData)));
 
-console.log(Encrypt(JSON.stringify(data)));
+const orderData = { pageNumber: 1, pageSize: 10, ordertype: 1 };
+console.log(Encrypt(JSON.stringify(orderData)));

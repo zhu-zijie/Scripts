@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const url = `https://cgyy.xju.edu.cn/service/appointment/appointment/phone/payOrderDetails`;
+const url = `https://cgyy.xju.edu.cn/service/appointment/appointment/phone/payOrderForPhone`;
 const method = `POST`;
 const headers = {
   "Sec-Fetch-Dest": `empty`,
@@ -17,7 +17,10 @@ const headers = {
   "Accept-Language": `en-US,en;q=0.9`,
   Accept: `*/*`,
 };
-const bodyData = JSON.parse(`{"item":"encrypt自己生成"}`);
+
+const bodyData = {
+  item: "encrypt自己生成",
+};
 
 async function makeRequest() {
   try {
@@ -27,15 +30,27 @@ async function makeRequest() {
       headers: headers,
       data: bodyData,
     });
-
-    console.log(response.data);
+    const responseData = JSON.stringify(response.data);
+    return responseData;
   } catch (error) {
-    console.error("Request failed:", error.message);
+    console.error("请求失败:", error.message);
     if (error.response) {
-      console.error("Status:", error.response.status);
-      console.error("Response data:", error.response.data);
+      console.error("状态码:", error.response.status);
+      console.error("响应数据:", JSON.stringify(error.response.data));
+      console.error("响应头:", JSON.stringify(error.response.headers));
+    } else if (error.request) {
+      console.error("未收到响应，请求信息:", error.request);
+    } else {
+      console.error("请求配置出错:", error.config);
     }
+    throw error;
   }
 }
 
-makeRequest();
+makeRequest()
+  .then((result) => {
+    console.log("请求成功完成，返回数据:", result);
+  })
+  .catch((error) => {
+    console.log("请求最终处理失败，错误:", error.message);
+  });

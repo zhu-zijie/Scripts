@@ -2,13 +2,13 @@
 // 2025-04-02
 const $ = new Env("新大体育馆");
 $.isNode() && require("dotenv").config();
-let desiredTime = $.isNode()
+const desiredTime = $.isNode()
   ? process.env.TIME_PERIOD
   : $.getdata("timePeriod") || $argument.desiredTime;
-let createTime = $.isNode()
+const createTime = $.isNode()
   ? process.env.CREATE_TIME
   : $.getdata("createTime") || $argument.createTime;
-let idSerial = $.isNode()
+const idSerial = $.isNode()
   ? process.env.ID_SERIAL
   : $.getdata("idSerial") || $argument.idSerial;
 
