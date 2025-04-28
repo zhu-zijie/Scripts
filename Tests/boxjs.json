@@ -17,7 +17,8 @@
         "payTime",
         "userName",
         "payPhone",
-        "idSerial"
+        "idSerial",
+        "token"
       ],
       "settings": [
         {
@@ -67,6 +68,14 @@
           "type": "text",
           "rows": 1,
           "desc": "置空默认不修改"
+        },
+        {
+          "id": "token",
+          "name": "token",
+          "val": null,
+          "type": "text",
+          "rows": 1,
+          "desc": "请输入您的token"
         }
       ],
       "author": "@zijie",

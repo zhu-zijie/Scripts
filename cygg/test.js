@@ -10,7 +10,7 @@ const headers = {
   "Sec-Fetch-Site": `same-origin`,
   Origin: `https://cgyy.xju.edu.cn`,
   "User-Agent": `Mozilla/5.0 (iPhone; CPU iPhone OS 16_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/134.0.6998.33 Mobile/15E148 Safari/604.1`,
-  token: `填自己的token`,
+  // token: `填自己的token`,
   "Sec-Fetch-Mode": `cors`,
   Referer: `https://cgyy.xju.edu.cn/`,
   Host: `cgyy.xju.edu.cn`,
@@ -19,7 +19,7 @@ const headers = {
 };
 
 const bodyData = {
-  item: "encrypt自己生成",
+  // item: "encrypt自己生成",
 };
 
 async function makeRequest() {
