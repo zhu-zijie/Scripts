@@ -7,7 +7,9 @@ $.isNode() && require("dotenv").config();
 const notify = $.isNode() ? require("./sendNotify") : "";
 
 // 认证和加密相关配置
-const token = $.isNode() ? process.env.TOKEN : $.getdata("token");
+const token = $.isNode()
+  ? process.env.TOKEN
+  : $.getdata("token") || $argument.token;
 const t = CryptoJS.enc.Utf8.parse("0102030405060708"); // 16字节密钥
 const i = CryptoJS.enc.Utf8.parse("0102030405060708"); // 16字节IV
 
