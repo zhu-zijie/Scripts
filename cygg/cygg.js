@@ -1,8 +1,6 @@
-const axios = require("axios");
-const CryptoJS = require("crypto-js");
 const $ = new Env("健身查询");
-
-// 加载环境变量和通知模块
+const axios = $.isNode() && require("axios");
+const CryptoJS = $.isNode() && require("crypto-js");
 $.isNode() && require("dotenv").config();
 const notify = $.isNode() ? require("./sendNotify") : "";
 
