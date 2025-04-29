@@ -11,9 +11,9 @@ const cryptoJS = require("crypto-js");
 const $ = new Env("健身查询");
 $.isNode() && require("dotenv").config();
 const notify = $.isNode() ? require("./sendNotify") : "";
+const token = $.isNode() && process.env.TOKEN;
 
 // 认证和加密相关配置
-const token = $.isNode() && process.env.TOKEN;
 const t = cryptoJS.enc.Utf8.parse("0102030405060708"); // 16字节密钥
 const i = cryptoJS.enc.Utf8.parse("0102030405060708"); // 16字节IV
 
@@ -166,7 +166,6 @@ async function makeRequestWithPages(startPage = 1, maxPages = 5) {
   }
 }
 
-// 执行查询
 makeRequestWithPages(1, 1);
 
 // prettier-ignore
