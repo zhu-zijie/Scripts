@@ -1,7 +1,6 @@
 // 仅供测试使用，禁止用于商业用途
 // 2025-04-02
 const $ = new Env("新大体育馆");
-$.isNode() && require("dotenv").config();
 const desiredTime = $.isNode()
   ? process.env.TIME_PERIOD
   : $.getdata("timePeriod") || $argument.desiredTime;

@@ -1,15 +1,21 @@
+/*
+查询健身预约信息
+仅适配Node.js环境
+环境变量TOKEN
+*/
+
+const axios = require("axios");
+const cryptoJS = require("crypto-js");
+
+// 环境变量配置
 const $ = new Env("健身查询");
-const axios = $.isNode() && require("axios");
-const CryptoJS = $.isNode() && require("crypto-js");
 $.isNode() && require("dotenv").config();
 const notify = $.isNode() ? require("./sendNotify") : "";
 
 // 认证和加密相关配置
-const token = $.isNode()
-  ? process.env.TOKEN
-  : $.getdata("token") || $argument.token;
-const t = CryptoJS.enc.Utf8.parse("0102030405060708"); // 16字节密钥
-const i = CryptoJS.enc.Utf8.parse("0102030405060708"); // 16字节IV
+const token = $.isNode() && process.env.TOKEN;
+const t = cryptoJS.enc.Utf8.parse("0102030405060708"); // 16字节密钥
+const i = cryptoJS.enc.Utf8.parse("0102030405060708"); // 16字节IV
 
 // API请求配置
 const url = `https://cgyy.xju.edu.cn/service/appointment/appointment/phone/payOrderForPhone`;
@@ -60,11 +66,11 @@ function extractAllBookingTimes(responseData) {
  * @returns {string} 加密后的字符串
  */
 function Encrypt(e) {
-  const n = CryptoJS.enc.Utf8.parse(e);
-  const o = CryptoJS.AES.encrypt(n, t, {
+  const n = cryptoJS.enc.Utf8.parse(e);
+  const o = cryptoJS.AES.encrypt(n, t, {
     iv: i,
-    mode: CryptoJS.mode.CBC,
-    padding: CryptoJS.pad.Pkcs7,
+    mode: cryptoJS.mode.CBC,
+    padding: cryptoJS.pad.Pkcs7,
   });
   return o.ciphertext.toString().toUpperCase();
 }
