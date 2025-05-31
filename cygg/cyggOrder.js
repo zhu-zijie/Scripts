@@ -15,7 +15,7 @@ let body = $response.body;
 let jsonData, element;
 try {
   jsonData = JSON.parse(body);
-  element = jsonData.resultData.content[1];
+  element = jsonData.resultData.content[0];
 } catch (error) {
   console.error("解析失败：", error);
   $done({ body: body });
