@@ -157,7 +157,7 @@ const fetchDouyinData = async (keyword, offset = 0, count = 20) => {
 
 // 浏览器自动播放
 const main = async () => {
-  const results = await fetchDouyinData("旗袍美女");
+  const results = await fetchDouyinData("加绒摇", 0, 10);
 
   if (results.length > 0) {
     console.log(`找到 ${results.length} 个视频结果`);
