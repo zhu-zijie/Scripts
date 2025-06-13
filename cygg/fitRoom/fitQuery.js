@@ -1,8 +1,13 @@
 /**
- * 健身房预约系统
+ * 健身房时段查询
  */
-const CryptoJS = require("crypto-js");
 const axios = require("axios");
+const CryptoJS = require("crypto-js");
+
+const queryParams = {
+  nodeid: "814927354769186816", // 南区健身房ID
+  selecttime: "2025-06-14", // 查询日期
+};
 
 /**
  * AES加密函数
@@ -10,44 +15,31 @@ const axios = require("axios");
  * @returns {string} - 加密后的字符串
  */
 function encrypt(data) {
+  // 定义加密所需变量
+  const key = CryptoJS.enc.Utf8.parse("0102030405060708"); // 16字节密钥
+  const iv = CryptoJS.enc.Utf8.parse("0102030405060708"); // 16字节IV
+
   // 如果是对象，先转为JSON字符串
   const jsonData = typeof data === "object" ? JSON.stringify(data) : data;
 
-  const key = CryptoJS.enc.Utf8.parse("0102030405060708");
-  const iv = CryptoJS.enc.Utf8.parse("0102030405060708");
+  const dataUtf8 = CryptoJS.enc.Utf8.parse(jsonData);
+  const encrypted = CryptoJS.AES.encrypt(dataUtf8, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  });
 
-  const encryptedData = CryptoJS.AES.encrypt(
-    CryptoJS.enc.Utf8.parse(jsonData),
-    key,
-    {
-      iv: iv,
-      mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7,
-    }
-  );
-  return encryptedData.ciphertext.toString().toUpperCase();
+  return encrypted.ciphertext.toString().toUpperCase();
 }
 
-// 预约参数配置
-const requestParams = {
-  nodeid: "814927453893173248", // 1号实验室ID
-  reserveTime: ["16:30-17:30"], // 预约时间段
-  reserveDate: "2025-06-11", // 预约日期
-  accompanyPerson: [], // 陪同人员
-  reservationPerson: "107552300697", // 预约人ID
-  payprice: "0", // 支付价格，免费时0，付费时500
-  // txamt:"500",  // 付费时参数
-  // booktype:"1", // 付费时参数
-};
-
 /**
- * 发送API请求预约实验室
+ * 发送健身房时段查询请求
  */
 async function sendRequest() {
-  console.log("开始预约健身房...");
+  console.log("开始查询健身房时段...");
 
   const url =
-    "https://cgyy.xju.edu.cn/service/appointment/appointment/phone/bookingLaboratoryRoom";
+    "https://cgyy.xju.edu.cn/service/appointment/appointment/phone/getAppointmentTimeSlot";
 
   // 构建请求头
   // prettier-ignore
@@ -63,35 +55,25 @@ async function sendRequest() {
     "Cookie": "datalook-appointment-phone=F143C21EBC37ABB3183732B039068C37"
   };
 
-  // 对数据进行加密
-  const encryptedData = encrypt(requestParams);
+  // 加密请求数据
+  const encryptedData = encrypt(queryParams);
   const requestBody = { item: encryptedData };
 
   try {
-    console.log("发送预约请求...");
-    console.log("预约信息:", {
-      健身房: "1号健身房",
-      日期: requestParams.reserveDate,
-      时间段: requestParams.reserveTime.join(", "),
-    });
+    console.log(`发送请求到: ${url}`);
+    console.log("请求参数:", queryParams);
 
-    // 使用axios发送POST请求
+    // 使用axios发送请求
     const response = await axios.post(url, requestBody, {
       headers: headers,
-      timeout: 10000, // 设置超时时间为10秒
+      timeout: 10000, // 设置超时时间
     });
 
-    // axios自动解析JSON响应
+    // 输出响应结果
     console.log("响应状态:", response.status);
+    console.log("响应数据:", response.data);
 
-    // 处理预约结果
-    if (response.data.success) {
-      console.log("\n✅ 预约成功!");
-      console.log("预约详情:", response.data.resultData);
-    } else {
-      console.error("\n❌ 预约失败:", response.data.message);
-    }
-
+    // 返回原始响应
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -109,7 +91,7 @@ async function sendRequest() {
   }
 }
 
-// 执行预约
+// 执行查询
 sendRequest()
-  .then(() => console.log("预约流程完成"))
-  .catch((err) => console.error("预约过程出错:", err.message));
+  .then(console.log("查询完成"))
+  .catch((error) => console.error("查询失败:", error.message));

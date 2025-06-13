@@ -1,3 +1,7 @@
+/**
+ * 羽毛球场地预约查询脚本 -- 仅供学习和参考使用
+ */
+
 const CryptoJS = require("crypto-js");
 const axios = require("axios");
 
@@ -39,7 +43,7 @@ function getHeaders() {
     "Content-Type": "application/json",
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
     "sec-ch-ua": '"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
-    "token": "eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3NTU0NjI4OTMsIk9wZXJhdG9yIjoie1wiaWRzZXJpYWxcIjpcIjEwNzU1MjMwMDY5N1wiLFwibWVzc2FnZXR5cGVcIjpcIjBcIixcInBjb2RlXCI6XCIxMVwiLFwiY291bnRyeWNvZGVcIjpcIjE1NlwiLFwiaWRzZXJpYWwyXCI6XCI0MjEwMjMxOTk5MTEwMzI0MTJcIixcInNleFwiOlwiMVwiLFwicmVtYXJrXCI6XCI2NTZkZjYyYzEwOGJmNDgxNTFmMGY0MmM1OTY1NzJhZVwiLFwibmF0aW9uY29kZVwiOlwiMDFcIixcIm9yZ2lkXCI6MixcImlkZW50aXR5bm9cIjpcIjQyMTAyMzE5OTkxMTAzMjQxMlwiLFwic2Nob29sc3RhdHVzXCI6XCIxXCIsXCJkZXBhcnRpZFwiOjgxMTUsXCJ0ZWxcIjpcIjE1ODI2NjE4MjkzXCIsXCJpZFwiOjEwMTkyMTIxODE5NDM3NTQ3NTIsXCJpbnB1dGRhdGVcIjoxNzE1ODYwMjEzMDAwLFwidXNlcm5hbWVcIjpcIuacseaym-aWh1wifSIsInN1YiI6ImRhdGFsb29rIn0.Sz8YiZUrlYSI38WHGhx7iQo9O5W8IZRXscTo3IYzLnglEUsY9B3s9PVXKGnNRtbRab9DX0RhrKtIY0h0hxDnUk4I5L0PFWtuljzsZcP97SXTuqbI9vJazHFGkVja5P8o2l9su47tyYB9SxTYQ8_YtgJepUuQXqtna4wkRq-mIOPWDDL1IcEHZy8015vZfq20cndc62CVFSByLSSJ87R4KK39HITK8tZKILzexRO6fO_0itbQ5r70-ULYM5nPLAv5Zrc9Ml5z4jyHMpR7h21P0TiCTrAlBUTnrJN6VItBUbtT4_gTd_fdW-tlLBAcMH2iPrEvyauOaPMKY702frocoQ",    "Accept": "*/*",
+    "token": "eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3NTU3MzQ2NTksIk9wZXJhdG9yIjoie1wiaWRzZXJpYWxcIjpcIjEwNzU1MjMwMDY5N1wiLFwibWVzc2FnZXR5cGVcIjpcIjBcIixcInBjb2RlXCI6XCIxMVwiLFwiY291bnRyeWNvZGVcIjpcIjE1NlwiLFwiaWRzZXJpYWwyXCI6XCI0MjEwMjMxOTk5MTEwMzI0MTJcIixcInNleFwiOlwiMVwiLFwicmVtYXJrXCI6XCI2NTZkZjYyYzEwOGJmNDgxNTFmMGY0MmM1OTY1NzJhZVwiLFwibmF0aW9uY29kZVwiOlwiMDFcIixcIm9yZ2lkXCI6MixcImlkZW50aXR5bm9cIjpcIjQyMTAyMzE5OTkxMTAzMjQxMlwiLFwic2Nob29sc3RhdHVzXCI6XCIxXCIsXCJkZXBhcnRpZFwiOjgxMTUsXCJ0ZWxcIjpcIjE1ODI2NjE4MjkzXCIsXCJpZFwiOjEwMTkyMTIxODE5NDM3NTQ3NTIsXCJpbnB1dGRhdGVcIjoxNzE1ODYwMjEzMDAwLFwidXNlcm5hbWVcIjpcIuacseaym-aWh1wifSIsInN1YiI6ImRhdGFsb29rIn0.V2IuTpDemz6_JDj35LvHqIxFrusdurjtxCoIqtFmYhPEbuCRLejml7qDmdIXJxl1g4RQyQWS5NOf8GvJhlLkB7zaWLKSwDLDyRoSHV3LMhNbFUzTcJAjcpYYGZ61xh9Sq2u4xJnI7mh4OgvCTaFZioKG6J10xhnspeiJgAfwGgZFQs4nSdZq0QecIPTXOH7u-h5K9bHhHaU56t9FDBDrUZMN41Tos4q_WvpCkG-RcFUEO9J2rE93rED4QDF5ew0Z5IQt851nUWzIYt89kJnx4MWNaaPPiWC3OOv7HzRM3u5P2---l2238FHNh8RWM-lKkWjaUP87EvrQTsMUD6DBeQ",
     "Origin": "https://cgyy.xju.edu.cn",
     "Referer": "https://cgyy.xju.edu.cn/",
     "Cookie": "datalook-appointment-phone=F143C21EBC37ABB3183732B039068C37"

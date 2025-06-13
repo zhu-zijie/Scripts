@@ -1,6 +1,7 @@
 /**
- * 羽毛球场地预约系统
+ * 羽毛球场地预约系统 -- 仅供学习和参考使用
  */
+
 const axios = require("axios");
 const CryptoJS = require("crypto-js");
 
@@ -25,7 +26,16 @@ const price = String(appointTimeList.length * 2000); // 计算价格
 // 预约参数配置
 const bookingData = {
   unitPrice: "5",
-  nodeList: [{ sitename: "南区羽毛球馆5号场", nodeid: "814925637193310208" }], // 几号场ID
+  nodeList: [
+    { sitename: "南区羽毛球馆1号场", nodeid: "814925434071556096" },
+    { sitename: "南区羽毛球馆2号场", nodeid: "814925496096923648" },
+    { sitename: "南区羽毛球馆3号场", nodeid: "814925536915890176" },
+    { sitename: "南区羽毛球馆4号场", nodeid: "814925570327715840" },
+    { sitename: "南区羽毛球馆5号场", nodeid: "814925637193310208" },
+    { sitename: "南区羽毛球馆6号场", nodeid: "814925691589238784" },
+    { sitename: "南区羽毛球馆7号场", nodeid: "814925742428397568" },
+    { sitename: "南区羽毛球馆8号场", nodeid: "814925780974051328" },
+  ],
   payprice: price,
   appointmentDate: tomorrowDate,
   timeList: [
@@ -33,14 +43,6 @@ const bookingData = {
     { time: "20:30", status: "0" },
     { time: "21:30", status: "0" },
     { time: "22:30", status: "1" },
-    // { time: "10:30", status: "0" },
-    // { time: "11:30", status: "0" },
-    // { time: "12:30", status: "0" },
-    // { time: "13:30", status: "1" },
-    // { time: "15:30", status: "0" },
-    // { time: "16:30", status: "0" },
-    // { time: "17:30", status: "0" },
-    // { time: "18:30", status: "1" },
   ],
   coordinatesList: coordinatesList,
   appointTimeList: appointTimeList,
@@ -90,7 +92,7 @@ async function sendRequest() {
     "Connection": "keep-alive",
     "Content-Type": "application/json",
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
-    "token": "eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3NTU0NjI4OTMsIk9wZXJhdG9yIjoie1wiaWRzZXJpYWxcIjpcIjEwNzU1MjMwMDY5N1wiLFwibWVzc2FnZXR5cGVcIjpcIjBcIixcInBjb2RlXCI6XCIxMVwiLFwiY291bnRyeWNvZGVcIjpcIjE1NlwiLFwiaWRzZXJpYWwyXCI6XCI0MjEwMjMxOTk5MTEwMzI0MTJcIixcInNleFwiOlwiMVwiLFwicmVtYXJrXCI6XCI2NTZkZjYyYzEwOGJmNDgxNTFmMGY0MmM1OTY1NzJhZVwiLFwibmF0aW9uY29kZVwiOlwiMDFcIixcIm9yZ2lkXCI6MixcImlkZW50aXR5bm9cIjpcIjQyMTAyMzE5OTkxMTAzMjQxMlwiLFwic2Nob29sc3RhdHVzXCI6XCIxXCIsXCJkZXBhcnRpZFwiOjgxMTUsXCJ0ZWxcIjpcIjE1ODI2NjE4MjkzXCIsXCJpZFwiOjEwMTkyMTIxODE5NDM3NTQ3NTIsXCJpbnB1dGRhdGVcIjoxNzE1ODYwMjEzMDAwLFwidXNlcm5hbWVcIjpcIuacseaym-aWh1wifSIsInN1YiI6ImRhdGFsb29rIn0.Sz8YiZUrlYSI38WHGhx7iQo9O5W8IZRXscTo3IYzLnglEUsY9B3s9PVXKGnNRtbRab9DX0RhrKtIY0h0hxDnUk4I5L0PFWtuljzsZcP97SXTuqbI9vJazHFGkVja5P8o2l9su47tyYB9SxTYQ8_YtgJepUuQXqtna4wkRq-mIOPWDDL1IcEHZy8015vZfq20cndc62CVFSByLSSJ87R4KK39HITK8tZKILzexRO6fO_0itbQ5r70-ULYM5nPLAv5Zrc9Ml5z4jyHMpR7h21P0TiCTrAlBUTnrJN6VItBUbtT4_gTd_fdW-tlLBAcMH2iPrEvyauOaPMKY702frocoQ",    
+    "token": "eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3NTU3MzQ2NTksIk9wZXJhdG9yIjoie1wiaWRzZXJpYWxcIjpcIjEwNzU1MjMwMDY5N1wiLFwibWVzc2FnZXR5cGVcIjpcIjBcIixcInBjb2RlXCI6XCIxMVwiLFwiY291bnRyeWNvZGVcIjpcIjE1NlwiLFwiaWRzZXJpYWwyXCI6XCI0MjEwMjMxOTk5MTEwMzI0MTJcIixcInNleFwiOlwiMVwiLFwicmVtYXJrXCI6XCI2NTZkZjYyYzEwOGJmNDgxNTFmMGY0MmM1OTY1NzJhZVwiLFwibmF0aW9uY29kZVwiOlwiMDFcIixcIm9yZ2lkXCI6MixcImlkZW50aXR5bm9cIjpcIjQyMTAyMzE5OTkxMTAzMjQxMlwiLFwic2Nob29sc3RhdHVzXCI6XCIxXCIsXCJkZXBhcnRpZFwiOjgxMTUsXCJ0ZWxcIjpcIjE1ODI2NjE4MjkzXCIsXCJpZFwiOjEwMTkyMTIxODE5NDM3NTQ3NTIsXCJpbnB1dGRhdGVcIjoxNzE1ODYwMjEzMDAwLFwidXNlcm5hbWVcIjpcIuacseaym-aWh1wifSIsInN1YiI6ImRhdGFsb29rIn0.V2IuTpDemz6_JDj35LvHqIxFrusdurjtxCoIqtFmYhPEbuCRLejml7qDmdIXJxl1g4RQyQWS5NOf8GvJhlLkB7zaWLKSwDLDyRoSHV3LMhNbFUzTcJAjcpYYGZ61xh9Sq2u4xJnI7mh4OgvCTaFZioKG6J10xhnspeiJgAfwGgZFQs4nSdZq0QecIPTXOH7u-h5K9bHhHaU56t9FDBDrUZMN41Tos4q_WvpCkG-RcFUEO9J2rE93rED4QDF5ew0Z5IQt851nUWzIYt89kJnx4MWNaaPPiWC3OOv7HzRM3u5P2---l2238FHNh8RWM-lKkWjaUP87EvrQTsMUD6DBeQ",
     "Accept": "*/*",
     "Origin": "https://cgyy.xju.edu.cn",
     "Referer": "https://cgyy.xju.edu.cn/",
