@@ -6,6 +6,19 @@
 const axios = require("axios");
 const CryptoJS = require("crypto-js");
 
+const tomorrowDate = getTomorrowDate();
+const TARGET_HOUR = 9; // 目标小时（24小时制）
+const TARGET_MINUTE = 0; // 目标分钟
+const TARGET_SECOND = 0; // 目标秒数
+const ADVANCE_TIME_MS = 2000; // 提前准备时间(毫秒)
+const MAX_RETRY_ATTEMPTS = 5; // 最大重试次数
+const RETRY_DELAY_MS = 1000; // 重试间隔(毫秒)
+const coordinatesList = ["4-0", "4-1", "4-2"]; // 场地坐标
+const appointTimeList = ["19:30-20:30", "20:30-21:30", "21:30-22:30"]; // 预约时段
+const noRetryErrors = ["09:00--22:00", "限购"]; // 不重试的错误信息
+const TOKEN =
+  "eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3NTU3MzQ2NTksIk9wZXJhdG9yIjoie1wiaWRzZXJpYWxcIjpcIjEwNzU1MjMwMDY5N1wiLFwibWVzc2FnZXR5cGVcIjpcIjBcIixcInBjb2RlXCI6XCIxMVwiLFwiY291bnRyeWNvZGVcIjpcIjE1NlwiLFwiaWRzZXJpYWwyXCI6XCI0MjEwMjMxOTk5MTEwMzI0MTJcIixcInNleFwiOlwiMVwiLFwicmVtYXJrXCI6XCI2NTZkZjYyYzEwOGJmNDgxNTFmMGY0MmM1OTY1NzJhZVwiLFwibmF0aW9uY29kZVwiOlwiMDFcIixcIm9yZ2lkXCI6MixcImlkZW50aXR5bm9cIjpcIjQyMTAyMzE5OTkxMTAzMjQxMlwiLFwic2Nob29sc3RhdHVzXCI6XCIxXCIsXCJkZXBhcnRpZFwiOjgxMTUsXCJ0ZWxcIjpcIjE1ODI2NjE4MjkzXCIsXCJpZFwiOjEwMTkyMTIxODE5NDM3NTQ3NTIsXCJpbnB1dGRhdGVcIjoxNzE1ODYwMjEzMDAwLFwidXNlcm5hbWVcIjpcIuacseaym-aWh1wifSIsInN1YiI6ImRhdGFsb29rIn0.V2IuTpDemz6_JDj35LvHqIxFrusdurjtxCoIqtFmYhPEbuCRLejml7qDmdIXJxl1g4RQyQWS5NOf8GvJhlLkB7zaWLKSwDLDyRoSHV3LMhNbFUzTcJAjcpYYGZ61xh9Sq2u4xJnI7mh4OgvCTaFZioKG6J10xhnspeiJgAfwGgZFQs4nSdZq0QecIPTXOH7u-h5K9bHhHaU56t9FDBDrUZMN41Tos4q_WvpCkG-RcFUEO9J2rE93rED4QDF5ew0Z5IQt851nUWzIYt89kJnx4MWNaaPPiWC3OOv7HzRM3u5P2---l2238FHNh8RWM-lKkWjaUP87EvrQTsMUD6DBeQ";
+
 /**
  * 获取明天日期，格式：YYYY-MM-DD
  */
@@ -18,12 +31,7 @@ function getTomorrowDate() {
   )}-${String(tomorrow.getDate()).padStart(2, "0")}`;
 }
 
-// 日期和价格自动计算
-const tomorrowDate = getTomorrowDate();
-const coordinatesList = ["3-1", "3-2"]; // 场地坐标
-const appointTimeList = ["11:30-12:30", "12:30-13:30"]; // 预约时段
-
-// 预约参数配置（不需要改）
+// 预约参数配置
 const bookingData = {
   unitPrice: "5",
   nodeList: [
@@ -101,7 +109,7 @@ async function sendRequest(attemptNum = 1) {
     "Connection": "keep-alive",
     "Content-Type": "application/json",
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
-    "token": "eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3NTU3MzQ2NTksIk9wZXJhdG9yIjoie1wiaWRzZXJpYWxcIjpcIjEwNzU1MjMwMDY5N1wiLFwibWVzc2FnZXR5cGVcIjpcIjBcIixcInBjb2RlXCI6XCIxMVwiLFwiY291bnRyeWNvZGVcIjpcIjE1NlwiLFwiaWRzZXJpYWwyXCI6XCI0MjEwMjMxOTk5MTEwMzI0MTJcIixcInNleFwiOlwiMVwiLFwicmVtYXJrXCI6XCI2NTZkZjYyYzEwOGJmNDgxNTFmMGY0MmM1OTY1NzJhZVwiLFwibmF0aW9uY29kZVwiOlwiMDFcIixcIm9yZ2lkXCI6MixcImlkZW50aXR5bm9cIjpcIjQyMTAyMzE5OTkxMTAzMjQxMlwiLFwic2Nob29sc3RhdHVzXCI6XCIxXCIsXCJkZXBhcnRpZFwiOjgxMTUsXCJ0ZWxcIjpcIjE1ODI2NjE4MjkzXCIsXCJpZFwiOjEwMTkyMTIxODE5NDM3NTQ3NTIsXCJpbnB1dGRhdGVcIjoxNzE1ODYwMjEzMDAwLFwidXNlcm5hbWVcIjpcIuacseaym-aWh1wifSIsInN1YiI6ImRhdGFsb29rIn0.V2IuTpDemz6_JDj35LvHqIxFrusdurjtxCoIqtFmYhPEbuCRLejml7qDmdIXJxl1g4RQyQWS5NOf8GvJhlLkB7zaWLKSwDLDyRoSHV3LMhNbFUzTcJAjcpYYGZ61xh9Sq2u4xJnI7mh4OgvCTaFZioKG6J10xhnspeiJgAfwGgZFQs4nSdZq0QecIPTXOH7u-h5K9bHhHaU56t9FDBDrUZMN41Tos4q_WvpCkG-RcFUEO9J2rE93rED4QDF5ew0Z5IQt851nUWzIYt89kJnx4MWNaaPPiWC3OOv7HzRM3u5P2---l2238FHNh8RWM-lKkWjaUP87EvrQTsMUD6DBeQ",
+    "token": TOKEN,
     "Accept": "*/*",
     "Origin": "https://cgyy.xju.edu.cn",
     "Referer": "https://cgyy.xju.edu.cn/",
@@ -127,15 +135,6 @@ async function sendRequest(attemptNum = 1) {
     } else {
       console.error(`❌ 第 ${attemptNum} 次预约失败: ${response.data.message}`);
 
-      // 使用test.js中相同的重试逻辑 - 定义不需要重试的错误
-      const noRetryErrors = [
-        "已被预约",
-        "您已预约",
-        "已预约过",
-        "不在开放时间",
-        "限购,预约值已达最大",
-      ];
-
       // 判断是否应该重试
       const shouldRetry = !noRetryErrors.some((msg) =>
         response.data.message.includes(msg)
@@ -147,9 +146,12 @@ async function sendRequest(attemptNum = 1) {
         );
         await sleep(RETRY_DELAY_MS);
         return sendRequest(attemptNum + 1);
+      } else {
+        console.error(
+          `❌ 预约最终失败，已达到最大重试次数 (${MAX_RETRY_ATTEMPTS})`
+        );
+        return response.data;
       }
-
-      return response.data;
     }
   } catch (error) {
     console.error(`❌ 第 ${attemptNum} 次请求出错:`, error.message);
@@ -161,9 +163,12 @@ async function sendRequest(attemptNum = 1) {
       );
       await sleep(RETRY_DELAY_MS);
       return sendRequest(attemptNum + 1);
+    } else {
+      console.error(
+        `❌ 网络请求最终失败，已达到最大重试次数 (${MAX_RETRY_ATTEMPTS})`
+      );
+      return { success: false, message: `网络请求失败: ${error.message}` };
     }
-
-    throw error;
   }
 }
 
@@ -174,14 +179,6 @@ async function sendRequest(attemptNum = 1) {
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
-// 定时任务配置
-const TARGET_HOUR = 9; // 目标小时（24小时制）
-const TARGET_MINUTE = 0; // 目标分钟
-const TARGET_SECOND = 0; // 目标秒数
-const ADVANCE_TIME_MS = 2000; // 提前准备时间(毫秒)
-const MAX_RETRY_ATTEMPTS = 5; // 最大重试次数
-const RETRY_DELAY_MS = 1000; // 重试间隔(毫秒)
 
 /**
  * 等待到指定时间然后执行预约

@@ -17,6 +17,9 @@ const TARGET_SECOND = 0; // 目标秒数
 const ADVANCE_TIME_MS = 2000; // 提前准备时间(毫秒)
 const MAX_RETRY_ATTEMPTS = 5; // 最大重试次数
 const RETRY_DELAY_MS = 1000; // 重试间隔(毫秒)
+const noRetryErrors = ["09:00--22:00"]; // 未到预约时间
+const limitPurchaseErrors = ["限购"]; // 限购错误信息
+const AUTO_BOOKING = true; // true启用自动预约模式
 
 // 预约时间偏好 - 按优先级排序
 const PREFERRED_TIMES = [
@@ -212,7 +215,7 @@ function parseAvailableCourts(responseData) {
       responseData.resultData.reserveDate ||
       responseData.resultData.bookingenddate,
     timeList: timeList,
-    courts: nodeList, // 返回完整的场地信息而非仅名称
+    courts: nodeList,
     courtTable,
     available: availableSlots.length,
     slots: availableSlots,
@@ -443,6 +446,114 @@ function selectBestCourtAndTime(bookingData) {
 
 // =============== 预约相关函数 ===============
 /**
+ * 从可用场地中移除已限购的场地和时间
+ * @param {Object} bookingData - 原始预约数据
+ * @param {Array} usedCombinations - 已尝试的场地时间组合
+ * @returns {Object} - 更新后的预约数据
+ */
+function removeUsedCombinations(bookingData, usedCombinations) {
+  if (!bookingData.availableSlots || usedCombinations.length === 0) {
+    return bookingData;
+  }
+
+  // 过滤掉已使用的组合
+  const filteredSlots = bookingData.availableSlots.filter((slot) => {
+    const combination = `${slot.courtIndex}-${slot.timeSlot}`;
+    return !usedCombinations.includes(combination);
+  });
+
+  return {
+    ...bookingData,
+    availableSlots: filteredSlots,
+  };
+}
+
+/**
+ * 智能预约请求 - 支持限购时自动换场地
+ * @param {Object} initialBookingData - 初始预约数据
+ * @param {number} maxCourtAttempts - 最大场地尝试次数
+ * @returns {Promise<Object>} - 预约结果
+ */
+async function smartBookingRequest(initialBookingData, maxCourtAttempts = 3) {
+  let currentBookingData = initialBookingData;
+  let usedCombinations = []; // 记录已尝试的场地时间组合
+  let courtAttemptNum = 1;
+
+  while (courtAttemptNum <= maxCourtAttempts) {
+    console.log(`\n🎯 第 ${courtAttemptNum} 次场地选择尝试...`);
+
+    // 如果不是第一次，需要重新选择场地
+    if (courtAttemptNum > 1) {
+      console.log("🔄 限购检测，重新选择最优场地...");
+
+      // 从可用场地中移除已使用的组合
+      const filteredBookingData = removeUsedCombinations(
+        initialBookingData,
+        usedCombinations
+      );
+
+      if (
+        !filteredBookingData.availableSlots ||
+        filteredBookingData.availableSlots.length === 0
+      ) {
+        console.error("❌ 没有更多可用场地，预约失败");
+        return { success: false, message: "所有场地均已限购或不可用" };
+      }
+
+      // 重新选择最佳场地
+      const newSelection = selectBestCourtAndTime(filteredBookingData);
+      if (!newSelection.success) {
+        console.error("❌ 无法选择新的场地时间组合");
+        return { success: false, message: "无可用场地时间组合" };
+      }
+
+      currentBookingData = newSelection.bookingData;
+      console.log(
+        `✅ 已选择新的场地组合: 场地${newSelection.selectedCourts.join(
+          ","
+        )} 时间${newSelection.selectedTimes.join(",")}`
+      );
+    }
+
+    // 记录当前尝试的组合
+    const currentCombination = `${currentBookingData.coordinatesList[0]}-${currentBookingData.appointTimeList[0]}`;
+    usedCombinations.push(currentCombination);
+
+    // 尝试预约当前选择的场地
+    const result = await sendBookingRequest(currentBookingData);
+
+    if (result.success) {
+      console.log("🎉 预约成功!");
+      return result;
+    }
+
+    // 检查是否是限购错误
+    const isLimitPurchaseError = limitPurchaseErrors.some(
+      (msg) => result.message && result.message.includes(msg)
+    );
+
+    if (isLimitPurchaseError && courtAttemptNum < maxCourtAttempts) {
+      console.log(`⚠️  遇到限购限制: ${result.message}`);
+      console.log(
+        `准备尝试其他场地... (${courtAttemptNum}/${maxCourtAttempts})`
+      );
+      courtAttemptNum++;
+      await sleep(500); // 短暂等待后重试
+      continue;
+    }
+
+    // 其他错误或达到最大尝试次数
+    console.error("❌ 预约最终失败:", result.message);
+    return result;
+  }
+
+  return {
+    success: false,
+    message: "已尝试所有可用场地，均遇到限购或其他限制",
+  };
+}
+
+/**
  * 发送羽毛球场地预约请求
  * @param {Object} bookingData - 预约参数
  * @param {number} attemptNum - 当前尝试次数
@@ -461,7 +572,7 @@ async function sendBookingRequest(bookingData, attemptNum = 1) {
   try {
     const response = await axios.post(url, requestBody, {
       headers: getHeaders(),
-      timeout: 10000, // 缩短超时时间，快速失败以便重试
+      timeout: 10000,
     });
 
     console.log(`第 ${attemptNum} 次预约请求响应状态: ${response.status}`);
@@ -473,27 +584,37 @@ async function sendBookingRequest(bookingData, attemptNum = 1) {
     } else {
       console.error(`❌ 第 ${attemptNum} 次预约失败: ${response.data.message}`);
 
-      const noRetryErrors = [
-        "已被预约",
-        "您已预约",
-        "已预约过",
-        "不在开放时间",
-        "限购,预约值已达最大",
-      ];
-
-      const shouldRetry = !noRetryErrors.some((msg) =>
+      // 检查是否是限购错误
+      const isLimitPurchaseError = limitPurchaseErrors.some((msg) =>
         response.data.message.includes(msg)
       );
 
-      if (attemptNum < MAX_RETRY_ATTEMPTS && shouldRetry) {
+      // 检查是否是其他不重试错误
+      const shouldNotRetry = noRetryErrors.some((msg) =>
+        response.data.message.includes(msg)
+      );
+
+      if (isLimitPurchaseError) {
+        // 限购错误，直接返回让上层函数处理场地切换
+        return { success: false, message: response.data.message };
+      } else if (shouldNotRetry) {
+        // 其他不重试错误
+        console.error(`❌ 遇到不可重试错误，停止重试`);
+        return { success: false, message: response.data.message };
+      } else if (attemptNum < MAX_RETRY_ATTEMPTS) {
+        // 网络或临时错误，继续重试
         console.log(
           `等待 ${RETRY_DELAY_MS}ms 后重试... (${attemptNum}/${MAX_RETRY_ATTEMPTS})`
         );
         await sleep(RETRY_DELAY_MS);
         return sendBookingRequest(bookingData, attemptNum + 1);
+      } else {
+        // 达到最大重试次数
+        console.error(
+          `❌ 预约最终失败，已达到最大重试次数 (${MAX_RETRY_ATTEMPTS})`
+        );
+        return { success: false, message: response.data.message };
       }
-
-      return response.data;
     }
   } catch (error) {
     console.error(`❌ 第 ${attemptNum} 次请求出错:`, error.message);
@@ -505,9 +626,13 @@ async function sendBookingRequest(bookingData, attemptNum = 1) {
       );
       await sleep(RETRY_DELAY_MS);
       return sendBookingRequest(bookingData, attemptNum + 1);
+    } else {
+      // 达到最大重试次数，返回失败结果
+      console.error(
+        `❌ 网络请求最终失败，已达到最大重试次数 (${MAX_RETRY_ATTEMPTS})`
+      );
+      return { success: false, message: `网络请求失败: ${error.message}` };
     }
-
-    throw error;
   }
 }
 
@@ -530,12 +655,41 @@ async function scheduleBooking(bookingData) {
   // 如果目标时间已过，则立即执行
   if (now >= targetTime) {
     console.log("目标时间已过，立即执行预约...");
-    await sendBookingRequest(bookingData);
+    try {
+      const result = await smartBookingRequest(bookingData);
+      if (result && result.success) {
+        console.log("🎉 成功预约场地!");
+      } else {
+        console.error("💔 最终预约失败:", result ? result.message : "未知错误");
+      }
+    } catch (error) {
+      console.error("💔 预约过程出错:", error.message);
+    }
+    console.log("📋 预约流程完成，程序即将退出");
+    process.exit(0);
     return;
   }
 
   // 计算等待时间（减去提前准备时间）
   const waitTime = targetTime.getTime() - now.getTime() - ADVANCE_TIME_MS;
+
+  // 如果等待时间为负数，立即执行
+  if (waitTime <= 0) {
+    console.log("已到达预约时间，立即执行...");
+    try {
+      const result = await smartBookingRequest(bookingData);
+      if (result && result.success) {
+        console.log("🎉 成功预约场地!");
+      } else {
+        console.error("💔 最终预约失败:", result ? result.message : "未知错误");
+      }
+    } catch (error) {
+      console.error("💔 预约过程出错:", error.message);
+    }
+    console.log("📋 预约流程完成，程序即将退出");
+    process.exit(0);
+    return;
+  }
 
   // 打印等待信息
   const waitMinutes = Math.floor(waitTime / 60000);
@@ -563,17 +717,20 @@ async function scheduleBooking(bookingData) {
 
   console.log("🚀 准时发送预约请求!");
 
-  // 执行预约请求
+  // 执行智能预约请求
   try {
-    const result = await sendBookingRequest(bookingData);
-    if (result.success) {
+    const result = await smartBookingRequest(bookingData);
+    if (result && result.success) {
       console.log("🎉 成功预约场地!");
     } else {
-      console.error("💔 最终预约失败:", result.message);
+      console.error("💔 最终预约失败:", result ? result.message : "未知错误");
     }
   } catch (error) {
     console.error("💔 预约过程出错:", error.message);
   }
+
+  console.log("📋 预约流程完成，程序即将退出");
+  process.exit(0);
 }
 
 /**
@@ -639,16 +796,20 @@ async function main() {
     console.log(`坐标: ${selection.coordinatesList.join(", ")}`);
 
     // 3. 用户确认
+    let confirmed = AUTO_BOOKING;
     const ui = createUserInterface();
-    const confirmed = await ui.confirm("是否确认使用以上选择进行预约?");
 
-    if (!confirmed) {
-      console.log("❌ 用户取消了预约");
+    if (!AUTO_BOOKING) {
+      confirmed = await ui.confirm("是否确认使用以上选择进行预约?");
       ui.close();
-      return;
-    }
 
-    ui.close();
+      if (!confirmed) {
+        console.log("❌ 用户取消了预约");
+        return;
+      }
+    } else {
+      console.log("✅ 自动预约模式：系统将直接使用上述选择进行预约");
+    }
 
     // 4. 准备预约数据
     console.log("\n第3步: 准备预约数据");

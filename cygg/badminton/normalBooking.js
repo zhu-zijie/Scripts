@@ -19,7 +19,7 @@ function getTomorrowDate() {
 
 // 日期和价格自动计算
 const tomorrowDate = getTomorrowDate();
-const coordinatesList = ["0-0", "0-1", "0-2"]; // 场地坐标
+const coordinatesList = ["4-0", "4-1", "4-2"]; // 场地坐标
 const appointTimeList = ["19:30-20:30", "20:30-21:30", "21:30-22:30"]; // 预约时段
 const price = String(appointTimeList.length * 2000); // 计算价格
 
@@ -49,8 +49,8 @@ const bookingData = {
   reserveDate: tomorrowDate,
   booktype: 2,
   appointmentType: 2,
-  nodeid: "814925270195904512", // 场馆ID
-  txamt: price, // 免费时不需要
+  nodeid: "814925270195904512",
+  txamt: price,
 };
 
 /**

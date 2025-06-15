@@ -124,7 +124,7 @@ const fetchDouyinData = async (keyword, offset = 0, count = 20) => {
             aweme_id: awemeInfo.aweme_id || "未知",
             author: awemeInfo.author?.nickname || "未知",
             uid: awemeInfo.author?.uid || "未知",
-            videoUrl: awemeInfo.video?.play_addr?.url_list?.[2] || "未知",
+            videoUrl: awemeInfo.video?.play_addr?.url_list?.[0] || "未知",
             duration: awemeInfo.video?.duration || 15000,
           };
         })
@@ -157,7 +157,7 @@ const fetchDouyinData = async (keyword, offset = 0, count = 20) => {
 
 // 浏览器自动播放
 const main = async () => {
-  const results = await fetchDouyinData("加绒摇", 0, 10);
+  const results = await fetchDouyinData("自贡移动", 0, 10);
 
   if (results.length > 0) {
     console.log(`找到 ${results.length} 个视频结果`);
@@ -183,6 +183,7 @@ const main = async () => {
           console.log(`作者: ${video.author}`);
           console.log(`视频ID: ${video.aweme_id}`);
           console.log(`视频时长: ${Math.round(video.duration / 1000)}秒`);
+          console.log(`视频链接: ${video.videoUrl}`);
 
           // 使用AppleScript在同一个标签页打开
           const appleScript = `
