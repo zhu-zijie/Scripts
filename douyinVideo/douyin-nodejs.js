@@ -1,4 +1,4 @@
-// 抖音视频播放器 - Node.js版本
+// 抖音视频播放器
 // 生成HTML页面在浏览器中播放
 
 const https = require("https");
@@ -412,7 +412,7 @@ const generateHTML = (videos, keyword) => {
                         </div>
                     </div>
                     <video id="player-${index}" controls preload="metadata">
-                        <source src="http://localhost:8080/proxy-video?url=${encodeURIComponent(
+                        <source src="http://localhost:3000/proxy-video?url=${encodeURIComponent(
                           video.videoUrl
                         )}" type="video/mp4">
                         您的浏览器不支持视频播放
@@ -635,7 +635,7 @@ const generateHTML = (videos, keyword) => {
 };
 
 // 创建视频代理服务器
-const createProxyServer = (port = 8080) => {
+const createProxyServer = (port = 3000) => {
   return new Promise((resolve, reject) => {
     const server = http.createServer((req, res) => {
       const parsedUrl = url.parse(req.url, true);
@@ -745,7 +745,7 @@ const runInteractiveMode = async () => {
   console.log("🚀 正在启动视频代理服务器...");
   let proxyServer;
   try {
-    proxyServer = await createProxyServer(8080);
+    proxyServer = await createProxyServer(3000);
   } catch (error) {
     console.log("❌ 代理服务器启动失败:", error.message);
     console.log("⚠️  将使用直接链接模式（可能无法播放）");
