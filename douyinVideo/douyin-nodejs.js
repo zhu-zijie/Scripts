@@ -7,8 +7,10 @@ const fs = require("fs");
 const path = require("path");
 const { exec } = require("child_process");
 const readline = require("readline");
+const http = require("http");
+const url = require("url");
 
-// 抖音API配置（与JSBox版本相同）
+// 抖音API配置
 const API_CONFIG = {
   baseUrl: "https://www.douyin.com/aweme/v1/web/general/search/single/",
   searchParams: {
@@ -19,8 +21,8 @@ const API_CONFIG = {
     enable_history: 1,
     query_correct_type: 1,
     is_filter_search: 0,
-    offset: 10,
-    count: 10,
+    offset: 0,
+    count: 20,
     need_filter_settings: 0,
   },
   deviceInfo: {
@@ -410,7 +412,9 @@ const generateHTML = (videos, keyword) => {
                         </div>
                     </div>
                     <video id="player-${index}" controls preload="metadata">
-                        <source src="${video.videoUrl}" type="video/mp4">
+                        <source src="http://localhost:8080/proxy-video?url=${encodeURIComponent(
+                          video.videoUrl
+                        )}" type="video/mp4">
                         您的浏览器不支持视频播放
                     </video>
                     <div class="progress-bar">
@@ -424,9 +428,6 @@ const generateHTML = (videos, keyword) => {
                         <button class="btn btn-secondary" onclick="copyUrl('${
                           video.videoUrl
                         }')">📋 复制链接</button>
-                        <a href="${video.videoUrl}" download="${
-                  video.author
-                }-${index}.mp4" class="btn btn-secondary">⬇️ 下载</a>
                     </div>
                 </div>
             `
@@ -633,10 +634,122 @@ const generateHTML = (videos, keyword) => {
 </html>`;
 };
 
-// 命令行交互
+// 创建视频代理服务器
+const createProxyServer = (port = 8080) => {
+  return new Promise((resolve, reject) => {
+    const server = http.createServer((req, res) => {
+      const parsedUrl = url.parse(req.url, true);
+
+      // 设置CORS头
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "Range, Content-Type");
+
+      if (req.method === "OPTIONS") {
+        res.writeHead(200);
+        res.end();
+        return;
+      }
+
+      if (parsedUrl.pathname === "/proxy-video") {
+        const videoUrl = parsedUrl.query.url;
+        if (!videoUrl) {
+          res.writeHead(400);
+          res.end("Missing video url");
+          return;
+        }
+
+        try {
+          console.log(`🎥 代理视频请求: ${videoUrl.substring(0, 100)}...`);
+
+          // 代理视频请求，绕过防盗链
+          const videoReq = https.request(
+            videoUrl,
+            {
+              headers: {
+                "User-Agent":
+                  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+                Referer: "https://www.douyin.com/",
+                Accept:
+                  "video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5",
+                Range: req.headers.range || "bytes=0-",
+                "Accept-Encoding": "identity",
+                Connection: "keep-alive",
+              },
+            },
+            (videoRes) => {
+              console.log(`📺 视频响应状态: ${videoRes.statusCode}`);
+
+              res.writeHead(videoRes.statusCode, {
+                "Content-Type": videoRes.headers["content-type"] || "video/mp4",
+                "Content-Length": videoRes.headers["content-length"],
+                "Accept-Ranges": "bytes",
+                "Content-Range": videoRes.headers["content-range"],
+                "Access-Control-Allow-Origin": "*",
+                "Cache-Control": "public, max-age=3600",
+              });
+
+              videoRes.pipe(res);
+            }
+          );
+
+          videoReq.on("error", (proxyError) => {
+            console.log("❌ 视频代理请求错误:", proxyError.message);
+            res.writeHead(500);
+            res.end("Video proxy error: " + proxyError.message);
+          });
+
+          videoReq.end();
+        } catch (proxyException) {
+          console.log("❌ 视频代理异常:", proxyException.message);
+          res.writeHead(500);
+          res.end("Video proxy failed: " + proxyException.message);
+        }
+      } else {
+        res.writeHead(404);
+        res.end("Not Found");
+      }
+    });
+
+    server.listen(port, "127.0.0.1", () => {
+      console.log(`🚀 视频代理服务器已启动: http://localhost:${port}`);
+      resolve(server);
+    });
+
+    server.on("error", (error) => {
+      if (error.code === "EADDRINUSE") {
+        console.log(`⚠️  端口 ${port} 已被占用，尝试使用端口 ${port + 1}`);
+        createProxyServer(port + 1)
+          .then(resolve)
+          .catch(reject);
+      } else {
+        reject(error);
+      }
+    });
+  });
+};
+
+// 停止代理服务器
+const stopProxyServer = (server) => {
+  if (server) {
+    server.close(() => {
+      console.log("🛑 视频代理服务器已停止");
+    });
+  }
+};
 const runInteractiveMode = async () => {
   console.log("\n🎥 抖音视频播放器 (Node.js 版本)");
   console.log("===================================\n");
+
+  // 启动代理服务器
+  console.log("🚀 正在启动视频代理服务器...");
+  let proxyServer;
+  try {
+    proxyServer = await createProxyServer(8080);
+  } catch (error) {
+    console.log("❌ 代理服务器启动失败:", error.message);
+    console.log("⚠️  将使用直接链接模式（可能无法播放）");
+  }
 
   const rl = readline.createInterface({
     input: process.stdin,
@@ -651,6 +764,19 @@ const runInteractiveMode = async () => {
     });
   };
 
+  // 优雅退出处理
+  const gracefulExit = () => {
+    console.log("\n\n🛑 正在关闭程序...");
+    if (proxyServer) {
+      stopProxyServer(proxyServer);
+    }
+    rl.close();
+    process.exit(0);
+  };
+
+  process.on("SIGINT", gracefulExit);
+  process.on("SIGTERM", gracefulExit);
+
   try {
     console.log(
       "🔥 热门关键词: 美女, 舞蹈, 搞笑, 音乐, 美食, 风景, 宠物, 旅行\n"
@@ -662,7 +788,7 @@ const runInteractiveMode = async () => {
 
     console.log(`\n🔍 正在搜索"${searchKeyword}"相关视频...`);
 
-    const videos = await searchDouyinVideos(searchKeyword, 0, 15);
+    const videos = await searchDouyinVideos(searchKeyword, 0, 20);
 
     if (videos.length > 0) {
       console.log(`\n✅ 找到 ${videos.length} 个视频:`);
@@ -685,7 +811,14 @@ const runInteractiveMode = async () => {
 
       fs.writeFileSync(filePath, htmlContent, "utf8");
       console.log(`📄 HTML文件已生成: ${filePath}`);
-      console.log(`🌐 请在浏览器中打开此文件播放视频\n`);
+
+      if (proxyServer) {
+        console.log(`� 代理服务器运行中，视频可以正常播放`);
+      } else {
+        console.log(`⚠️  代理服务器未运行，视频可能无法播放`);
+      }
+
+      console.log(`�🌐 请在浏览器中打开此文件播放视频\n`);
 
       // 尝试自动打开浏览器
       const openCmd =
@@ -702,15 +835,24 @@ const runInteractiveMode = async () => {
         } else {
           console.log("✅ 已在默认浏览器中打开视频播放页面");
         }
+
+        // 询问是否继续运行代理服务器
+        if (proxyServer) {
+          askQuestion("\n按 Enter 键关闭代理服务器并退出程序: ").then(() => {
+            gracefulExit();
+          });
+        } else {
+          gracefulExit();
+        }
       });
     } else {
       console.log(`\n❌ 没有找到关键词"${searchKeyword}"相关的视频`);
       console.log("💡 建议尝试其他关键词或检查网络连接");
+      gracefulExit();
     }
   } catch (error) {
     console.log("\n❌ 程序执行失败:", error.message);
-  } finally {
-    rl.close();
+    gracefulExit();
   }
 };
 
