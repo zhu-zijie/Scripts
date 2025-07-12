@@ -8,8 +8,8 @@ const CryptoJS = require("crypto-js");
 
 const tomorrowDate = getTomorrowDate();
 const TARGET_HOUR = 9; // 目标小时（24小时制）
-const TARGET_MINUTE = 0; // 目标分钟
-const TARGET_SECOND = 0; // 目标秒数
+const TARGET_MINUTE = 3; // 目标分钟
+const TARGET_SECOND = 59; // 目标秒数
 const ADVANCE_TIME_MS = 2000; // 提前准备时间(毫秒)
 const MAX_RETRY_ATTEMPTS = 1000; // 最大重试次数
 const RETRY_DELAY_MS = 1000; // 重试间隔(毫秒)
