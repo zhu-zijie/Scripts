@@ -3,7 +3,7 @@ const isNode =
   typeof process !== "undefined" && process.versions && process.versions.node;
 const location = (isNode && process.env.LOCATION) || "101200101"; // 默认武汉
 const key = isNode && process.env.KEY;
-const notify = isNode ? require("./sendNotify") : "";
+const notify = isNode ? require("../sendNotify") : "";
 
 /**
  * 获取和风天气生活指数信息
