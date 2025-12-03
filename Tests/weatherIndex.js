@@ -84,7 +84,6 @@ async function main() {
         console.log("通知发送成功");
       } catch (notifyError) {
         console.warn("通知发送失败:", notifyError.message);
-        // 通知失败不影响主程序执行
       }
     }
   } catch (error) {
