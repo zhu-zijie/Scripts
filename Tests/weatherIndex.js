@@ -75,14 +75,21 @@ async function main() {
 
     // 如果需要发送通知
     if (isNode) {
-      const content = result.indices
-        .map((item) => `${item.name}: ${item.category}\n${item.text}`)
-        .join("\n\n");
+      try {
+        const content = result.indices
+          .map((item) => `${item.name}: ${item.category}\n${item.text}`)
+          .join("\n\n");
 
-      await notify.sendNotify("生活指数信息", content);
+        await notify.sendNotify("生活指数信息", content);
+        console.log("通知发送成功");
+      } catch (notifyError) {
+        console.warn("通知发送失败:", notifyError.message);
+        // 通知失败不影响主程序执行
+      }
     }
   } catch (error) {
     console.error("执行失败:", error);
+    process.exit(1);
   }
 }
 
