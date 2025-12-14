@@ -8,7 +8,7 @@ const axios = require("axios");
 const CryptoJS = require("crypto-js");
 const { URLSearchParams } = require("url");
 
-const notify = require("./sendNotify.js");
+const notify = require("../sendNotify.js");
 
 const KUGOU_COOKIE_ENV = process.env.KUGOU_COOKIE || "";
 const KUGOU_QUERY_ENV = process.env.KUGOU_QUERY || "";

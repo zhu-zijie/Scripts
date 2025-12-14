@@ -7,7 +7,7 @@
 const axios = require("axios");
 const location = process.env.LOCATION || "101200101";
 const key = process.env.KEY;
-const notify = require("./sendNotify");
+const notify = require("../sendNotify");
 
 /**
  * 获取和风天气生活指数信息
