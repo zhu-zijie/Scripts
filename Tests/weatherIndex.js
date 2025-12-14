@@ -1,21 +1,25 @@
+/**
+ * 天气生活指数信息获取脚本
+ * 依赖: axios
+ * 环境变量: LOCATION KEY
+ */
+
 const axios = require("axios");
-const isNode =
-  typeof process !== "undefined" && process.versions && process.versions.node;
-const location = (isNode && process.env.LOCATION) || "101200101"; // 默认武汉
-const key = isNode && process.env.KEY;
-const notify = isNode ? require("../sendNotify") : "";
+const location = process.env.LOCATION || "101200101";
+const key = process.env.KEY;
+const notify = require("./sendNotify");
 
 /**
  * 获取和风天气生活指数信息
  * @param {string} location - 城市ID,默认为武汉(101200101)
- * @param {string} key - 和风天气API密钥
+ * @param {string} key - 和风天气API密钥  type=0表示全部生活指数
  * @returns {Promise<Object>} 包含生活指数信息的对象
  */
 async function getLifeIndices(location, key) {
   const url = `https://devapi.qweather.com/v7/indices/1d`;
   const params = {
     key,
-    type: 0, // 0表示全部生活指数
+    type: 0,
     location,
   };
 
@@ -73,18 +77,16 @@ async function main() {
       console.log(`${item.name}: ${item.category} - ${item.text}`);
     });
 
-    // 如果需要发送通知
-    if (isNode) {
-      try {
-        const content = result.indices
-          .map((item) => `${item.name}: ${item.category}\n${item.text}`)
-          .join("\n\n");
+    // 发送通知
+    try {
+      const content = result.indices
+        .map((item) => `${item.name}: ${item.category}\n${item.text}`)
+        .join("\n\n");
 
-        await notify.sendNotify("生活指数信息", content);
-        console.log("通知发送成功");
-      } catch (notifyError) {
-        console.warn("通知发送失败:", notifyError.message);
-      }
+      await notify.sendNotify("生活指数信息", content);
+      console.log("通知发送成功");
+    } catch (notifyError) {
+      console.warn("通知发送失败:", notifyError.message);
     }
   } catch (error) {
     console.error("执行失败:", error);
