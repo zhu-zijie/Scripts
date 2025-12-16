@@ -67,32 +67,41 @@ async function getLifeIndices(location, key) {
   }
 }
 
-async function main() {
-  try {
-    const result = await getLifeIndices(location, key);
-    console.log(`更新时间: ${result.updateTime}`);
+async function run() {
+  const result = await getLifeIndices(location, key);
+  console.log(`更新时间: ${result.updateTime}`);
 
-    // 打印每条生活指数信息
-    result.indices.forEach((item) => {
-      console.log(`${item.name}: ${item.category} - ${item.text}`);
-    });
+  // 打印每条生活指数信息
+  result.indices.forEach((item) => {
+    console.log(`${item.name}: ${item.category} - ${item.text}`);
+  });
 
-    // 发送通知
-    try {
-      const content = result.indices
-        .map((item) => `${item.name}: ${item.category}\n${item.text}`)
-        .join("\n\n");
+  const content = result.indices
+    .map((item) => `${item.name}: ${item.category}\n${item.text}`)
+    .join("\n\n");
 
-      await notify.sendNotify("生活指数信息", content);
-      console.log("通知发送成功");
-    } catch (notifyError) {
-      console.warn("通知发送失败:", notifyError.message);
-    }
-  } catch (error) {
-    console.error("执行失败:", error);
-    process.exit(1);
-  }
+  return { title: "生活指数信息", content };
 }
 
-// 执行函数
-main();
+(async () => {
+  let notifyInfo;
+  try {
+    notifyInfo = await run();
+  } catch (e) {
+    console.error("执行失败:", e);
+    process.exit(1);
+  } finally {
+    if (notifyInfo) {
+      const { title, content } = notifyInfo;
+      try {
+        console.log("📢 正在发送通知...");
+        await notify.sendNotify(title, content);
+        console.log("✅ 通知发送成功");
+      } catch (notifyErr) {
+        console.warn("⚠️ 通知发送失败:", notifyErr.message);
+      }
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+  }
+})();
