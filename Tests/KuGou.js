@@ -8,12 +8,6 @@ const axios = require("axios");
 const CryptoJS = require("crypto-js");
 const { URLSearchParams } = require("url");
 
-// sendNotify 内部会请求“一言”接口，网络波动时可能导致 sendNotify 直接抛错。
-// 不改动 sendNotify.js 的前提下：若未显式配置 HITOKOTO，则默认关闭以提高稳定性。
-if (typeof process.env.HITOKOTO === "undefined") {
-  process.env.HITOKOTO = "false";
-}
-
 const notify = require("../sendNotify.js");
 
 const KUGOU_COOKIE_ENV = process.env.KUGOU_COOKIE || "";

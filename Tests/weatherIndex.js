@@ -8,12 +8,6 @@ const axios = require("axios");
 const location = process.env.LOCATION || "101200101";
 const key = process.env.KEY;
 
-// sendNotify 内部会请求“一言”接口，网络波动时可能导致 sendNotify 直接抛错。
-// 不改动 sendNotify.js 的前提下：若未显式配置 HITOKOTO，则默认关闭以提高稳定性。
-if (typeof process.env.HITOKOTO === "undefined") {
-  process.env.HITOKOTO = "false";
-}
-
 const notify = require("../sendNotify");
 
 function sleep(ms) {
@@ -104,14 +98,18 @@ async function run() {
   const result = await getLifeIndices(location, key);
   console.log(`更新时间: ${result.updateTime}`);
 
-  // 打印每条生活指数信息
-  result.indices.forEach((item) => {
-    console.log(`${item.name}: ${item.category} - ${item.text}`);
-  });
+  const lines = result.indices.map(
+    (item) => `${item.name}: ${item.category} - ${item.text}`
+  );
+  const printBlock = lines.join("\n");
+  console.log(printBlock);
 
   const content = result.indices
     .map((item) => `${item.name}: ${item.category}\n${item.text}`)
     .join("\n\n");
+
+  // 让 stdout 有机会先把上面的输出刷出去，减少与 sendNotify 内部日志的穿插。
+  await new Promise((resolve) => setImmediate(resolve));
 
   return { title: "生活指数信息", content };
 }
