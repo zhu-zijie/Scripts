@@ -7,7 +7,40 @@
 const axios = require("axios");
 const location = process.env.LOCATION || "101200101";
 const key = process.env.KEY;
+
+// sendNotify 内部会请求“一言”接口，网络波动时可能导致 sendNotify 直接抛错。
+// 不改动 sendNotify.js 的前提下：若未显式配置 HITOKOTO，则默认关闭以提高稳定性。
+if (typeof process.env.HITOKOTO === "undefined") {
+  process.env.HITOKOTO = "false";
+}
+
 const notify = require("../sendNotify");
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function sendNotifyWithRetry(title, content, maxAttempts = 3) {
+  let lastError;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      await notify.sendNotify(title, content);
+      return;
+    } catch (err) {
+      lastError = err;
+      if (attempt < maxAttempts) {
+        console.warn(
+          `⚠️ 通知发送失败(第 ${attempt}/${maxAttempts} 次): ${
+            err?.message || err
+          }`
+        );
+        await sleep(1500 * attempt);
+        continue;
+      }
+    }
+  }
+  throw lastError;
+}
 
 /**
  * 获取和风天气生活指数信息
@@ -95,7 +128,7 @@ async function run() {
       const { title, content } = notifyInfo;
       try {
         console.log("📢 正在发送通知...");
-        await notify.sendNotify(title, content, {});
+        await sendNotifyWithRetry(title, content);
         console.log("✅ 通知发送成功");
       } catch (notifyErr) {
         console.warn("⚠️ 通知发送失败:", notifyErr.message);

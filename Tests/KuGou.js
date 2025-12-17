@@ -8,6 +8,12 @@ const axios = require("axios");
 const CryptoJS = require("crypto-js");
 const { URLSearchParams } = require("url");
 
+// sendNotify 内部会请求“一言”接口，网络波动时可能导致 sendNotify 直接抛错。
+// 不改动 sendNotify.js 的前提下：若未显式配置 HITOKOTO，则默认关闭以提高稳定性。
+if (typeof process.env.HITOKOTO === "undefined") {
+  process.env.HITOKOTO = "false";
+}
+
 const notify = require("../sendNotify.js");
 
 const KUGOU_COOKIE_ENV = process.env.KUGOU_COOKIE || "";
@@ -26,6 +32,32 @@ const H5_SECRET = "NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt";
 
 function log(...a) {
   console.log(...a);
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function sendNotifyWithRetry(title, content, maxAttempts = 3) {
+  let lastError;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      await notify.sendNotify(title, content);
+      return;
+    } catch (err) {
+      lastError = err;
+      if (attempt < maxAttempts) {
+        log(
+          `⚠️ 通知发送失败(第 ${attempt}/${maxAttempts} 次): ${
+            err?.message || err
+          }`
+        );
+        await sleep(1500 * attempt);
+        continue;
+      }
+    }
+  }
+  throw lastError;
 }
 
 /**
@@ -219,7 +251,7 @@ async function runSignin() {
       const { notifyText, notifyContent } = notifyInfo;
       try {
         log("📢 正在发送通知...");
-        await notify.sendNotify(notifyText, notifyContent, {});
+        await sendNotifyWithRetry(notifyText, notifyContent);
         log("✅ 通知发送成功");
       } catch (notifyErr) {
         log(`⚠️ 通知发送失败: ${notifyErr.message}`);
