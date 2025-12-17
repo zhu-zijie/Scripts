@@ -95,13 +95,13 @@ async function run() {
       const { title, content } = notifyInfo;
       try {
         console.log("📢 正在发送通知...");
-        await notify.sendNotify(title, content);
+        await notify.sendNotify(title, content, {});
         console.log("✅ 通知发送成功");
       } catch (notifyErr) {
         console.warn("⚠️ 通知发送失败:", notifyErr.message);
       }
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 8000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
   }
 })();

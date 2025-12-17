@@ -219,13 +219,13 @@ async function runSignin() {
       const { notifyText, notifyContent } = notifyInfo;
       try {
         log("📢 正在发送通知...");
-        await notify.sendNotify(notifyText, notifyContent);
+        await notify.sendNotify(notifyText, notifyContent, {});
         log("✅ 通知发送成功");
       } catch (notifyErr) {
         log(`⚠️ 通知发送失败: ${notifyErr.message}`);
       }
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 8000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
   }
 })();
