@@ -8,20 +8,26 @@ const axios = require("axios");
 const CryptoJS = require("crypto-js");
 const { URLSearchParams } = require("url");
 
-// 关闭“一言”以减少外部网络依赖与失败概率
+/**
+ * sendNotify.js 在加载时会读取环境变量并可能请求“一言”。
+ * 这里强制关闭一言：降低外部网络依赖，避免通知阶段偶发失败和日志穿插。
+ * 注意：必须在 require("../sendNotify.js") 之前设置才生效。
+ */
 process.env.HITOKOTO = "false";
-
 const notify = require("../sendNotify.js");
 
 const KUGOU_COOKIE_ENV = process.env.KUGOU_COOKIE || "";
 const KUGOU_QUERY_ENV = process.env.KUGOU_QUERY || "";
 
+// 多账号分隔符：@（兼容 @ 后可带空格）
+const MULTI_ACCOUNT_SPLIT = /@\s*/;
+
 const COOKIES = KUGOU_COOKIE_ENV
-  ? KUGOU_COOKIE_ENV.split(/@\s*/).filter((c) => c.trim())
+  ? KUGOU_COOKIE_ENV.split(MULTI_ACCOUNT_SPLIT).filter((c) => c.trim())
   : [];
 
 const QUERY_ARRAY = KUGOU_QUERY_ENV
-  ? KUGOU_QUERY_ENV.split(/@\s*/).filter((q) => q.trim())
+  ? KUGOU_QUERY_ENV.split(MULTI_ACCOUNT_SPLIT).filter((q) => q.trim())
   : [];
 
 const LOG_PREFIX = "🎵 酷狗签到";
@@ -31,19 +37,25 @@ function log(...a) {
   console.log(...a);
 }
 
+/**
+ * 让 stdout 先把前面的日志刷出去，减少与 sendNotify 内部日志的穿插。
+ */
 function flushStdout() {
   return new Promise((resolve) => setImmediate(resolve));
 }
 
-/**
- * 构造查询字符串
- */
+/** 构造 query string（按原始顺序拼接） */
 function buildQS(obj) {
   const sp = new URLSearchParams();
   Object.keys(obj || {}).forEach((k) => sp.append(k, obj[k]));
   return sp.toString();
 }
 
+/**
+ * 读取并校验账号配置
+ * - KUGOU_COOKIE: cookie 列表
+ * - KUGOU_QUERY: URL 查询参数列表（appid/clientver/mid/uuid/dfid/token/userid...）
+ */
 function readStore() {
   if (!COOKIES?.length || !QUERY_ARRAY?.length) {
     log(`${LOG_PREFIX} ❌ 缺少环境变量: KUGOU_COOKIE, KUGOU_QUERY`);
@@ -92,7 +104,9 @@ function readStore() {
 }
 
 /**
- * 发送网络请求
+ * 统一网络请求封装
+ * - 默认超时 10s
+ * - 返回响应 JSON（axios 会自动解析）
  */
 async function fetchRemote(options) {
   try {
@@ -103,19 +117,17 @@ async function fetchRemote(options) {
       timeout: options.timeout || 10000,
       data: options.method === "POST" ? options.data : undefined,
     });
-    return {
-      response: { status: response.status, headers: response.headers },
-      body: JSON.stringify(response.data),
-    };
+    return response.data;
   } catch (err) {
     throw new Error(err.message || "网络请求失败");
   }
 }
 
 /**
- * 计算请求签名
+ * 计算酷狗接口签名
+ * - 规则：按 key 排序后拼接为 k=v 串（无分隔符），前后加 secret 再做 MD5。
  */
-async function calcSignature(queryObj) {
+function calcSignature(queryObj) {
   if (!CryptoJS?.MD5) {
     throw new Error("CryptoJS 模块未找到");
   }
@@ -135,6 +147,10 @@ async function calcSignature(queryObj) {
   return CryptoJS.MD5(raw).toString();
 }
 
+/**
+ * 单账号执行签到
+ * @param {{ userid: string, query: Record<string,string>, headers: {Cookie: string} }} rec
+ */
 async function signOne(rec) {
   const base = "https://gateway.kugou.com";
   const path = "/youth/v1/recharge/receive_vip_listen_song";
@@ -144,7 +160,7 @@ async function signOne(rec) {
 
   let signature;
   try {
-    signature = await calcSignature(q);
+    signature = calcSignature(q);
   } catch (error) {
     return { ok: false, code: -1, msg: error.message };
   }
@@ -154,8 +170,7 @@ async function signOne(rec) {
   const headers = rec.headers || {};
 
   try {
-    const res = await fetchRemote({ url, method: "POST", headers });
-    const ret = JSON.parse(res.body || "{}");
+    const ret = await fetchRemote({ url, method: "POST", headers });
 
     if (ret?.status === 1 && ret?.error_code === 0) {
       return { ok: true, msg: "✅ 签到成功" };
@@ -178,6 +193,9 @@ async function signOne(rec) {
   }
 }
 
+/**
+ * 主流程：读取账号 -> 循环签到 -> 打印汇总 -> 返回通知内容
+ */
 async function runSignin() {
   const list = readStore();
   if (!list.length) return;
@@ -215,7 +233,6 @@ async function runSignin() {
   ].join("\n");
   log(outputBlock);
 
-  // 让上面的输出先刷出去，避免与 sendNotify 内部日志穿插
   await flushStdout();
 
   return { notifyText, notifyContent };

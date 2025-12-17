@@ -5,38 +5,28 @@
  */
 
 const axios = require("axios");
-const location = process.env.LOCATION || "101200101";
-const key = process.env.KEY;
 
-// 关闭“一言”以减少外部网络依赖与日志穿插。
+/**
+ * sendNotify.js 在加载时会读取环境变量并可能请求“一言”。
+ * 这里强制关闭一言：降低外部网络依赖，避免通知阶段偶发失败和日志穿插。
+ * 注意：必须在 require("../sendNotify") 之前设置才生效。
+ */
 process.env.HITOKOTO = "false";
 
+const location = process.env.LOCATION || "101200101";
+const key = process.env.KEY;
 const notify = require("../sendNotify");
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+function requireEnv(name, value) {
+  if (value) return value;
+  throw new Error(`缺少环境变量: ${name}`);
 }
 
-async function sendNotifyWithRetry(title, content, maxAttempts = 3) {
-  let lastError;
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    try {
-      await notify.sendNotify(title, content);
-      return;
-    } catch (err) {
-      lastError = err;
-      if (attempt < maxAttempts) {
-        console.warn(
-          `⚠️ 通知发送失败(第 ${attempt}/${maxAttempts} 次): ${
-            err?.message || err
-          }`
-        );
-        await sleep(1500 * attempt);
-        continue;
-      }
-    }
-  }
-  throw lastError;
+/**
+ * 让 stdout 先把前面的日志刷出去，减少与 sendNotify 内部日志的穿插。
+ */
+function flushStdout() {
+  return new Promise((resolve) => setImmediate(resolve));
 }
 
 /**
@@ -58,7 +48,7 @@ async function getLifeIndices(location, key) {
 
     // 构建查询字符串
     const queryString = Object.keys(params)
-      .map((key) => `${key}=${params[key]}`)
+      .map((paramKey) => `${paramKey}=${params[paramKey]}`)
       .join("&");
 
     // 发送请求
@@ -98,6 +88,7 @@ async function getLifeIndices(location, key) {
 }
 
 async function run() {
+  requireEnv("KEY", key);
   const result = await getLifeIndices(location, key);
   console.log(`更新时间: ${result.updateTime}`);
 
@@ -111,8 +102,7 @@ async function run() {
     .map((item) => `${item.name}: ${item.category}\n${item.text}`)
     .join("\n\n");
 
-  // 让 stdout 有机会先把上面的输出刷出去，减少与 sendNotify 内部日志的穿插。
-  await new Promise((resolve) => setImmediate(resolve));
+  await flushStdout();
 
   return { title: "生活指数信息", content };
 }
@@ -129,7 +119,8 @@ async function run() {
       const { title, content } = notifyInfo;
       try {
         console.log("📢 正在发送通知...");
-        await sendNotifyWithRetry(title, content);
+        await flushStdout();
+        await notify.sendNotify(title, content);
         console.log("✅ 通知发送成功");
       } catch (notifyErr) {
         console.warn("⚠️ 通知发送失败:", notifyErr.message);
