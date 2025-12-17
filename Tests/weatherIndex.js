@@ -8,6 +8,9 @@ const axios = require("axios");
 const location = process.env.LOCATION || "101200101";
 const key = process.env.KEY;
 
+// 关闭“一言”以减少外部网络依赖与日志穿插。
+process.env.HITOKOTO = "false";
+
 const notify = require("../sendNotify");
 
 function sleep(ms) {

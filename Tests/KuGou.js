@@ -8,6 +8,9 @@ const axios = require("axios");
 const CryptoJS = require("crypto-js");
 const { URLSearchParams } = require("url");
 
+// 关闭“一言”以减少外部网络依赖与失败概率
+process.env.HITOKOTO = "false";
+
 const notify = require("../sendNotify.js");
 
 const KUGOU_COOKIE_ENV = process.env.KUGOU_COOKIE || "";
@@ -28,30 +31,8 @@ function log(...a) {
   console.log(...a);
 }
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function sendNotifyWithRetry(title, content, maxAttempts = 3) {
-  let lastError;
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    try {
-      await notify.sendNotify(title, content);
-      return;
-    } catch (err) {
-      lastError = err;
-      if (attempt < maxAttempts) {
-        log(
-          `⚠️ 通知发送失败(第 ${attempt}/${maxAttempts} 次): ${
-            err?.message || err
-          }`
-        );
-        await sleep(1500 * attempt);
-        continue;
-      }
-    }
-  }
-  throw lastError;
+function flushStdout() {
+  return new Promise((resolve) => setImmediate(resolve));
 }
 
 /**
@@ -225,11 +206,17 @@ async function runSignin() {
   const notifyText = LOG_PREFIX;
   const notifyContent = `${summary}\n\n${results.join("\n")}`;
 
-  log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  log(LOG_PREFIX);
-  log(summary);
-  results.forEach((r) => log(r));
-  log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
+  const outputBlock = [
+    "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+    LOG_PREFIX,
+    summary,
+    ...results,
+    "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n",
+  ].join("\n");
+  log(outputBlock);
+
+  // 让上面的输出先刷出去，避免与 sendNotify 内部日志穿插
+  await flushStdout();
 
   return { notifyText, notifyContent };
 }
@@ -245,7 +232,8 @@ async function runSignin() {
       const { notifyText, notifyContent } = notifyInfo;
       try {
         log("📢 正在发送通知...");
-        await sendNotifyWithRetry(notifyText, notifyContent);
+        await flushStdout();
+        await notify.sendNotify(notifyText, notifyContent);
         log("✅ 通知发送成功");
       } catch (notifyErr) {
         log(`⚠️ 通知发送失败: ${notifyErr.message}`);
