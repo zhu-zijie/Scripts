@@ -119,6 +119,14 @@ videoElement.addEventListener("pause", () => {
   status.classList.remove("hidden");
 });
 
+videoElement.addEventListener("click", () => {
+  if (videoElement.paused) {
+    videoElement.play();
+  } else {
+    videoElement.pause();
+  }
+});
+
 videoElement.addEventListener("error", () => {
   updateStatus("加载失败，正在切换...");
   scheduleRetry();
