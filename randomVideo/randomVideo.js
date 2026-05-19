@@ -325,6 +325,7 @@ const renderHTML = () => `
         <div class="cluster">
           <button id="toggleButton" class="primary" type="button">开始</button>
           <button id="nextButton" class="ghost" type="button">下一条</button>
+          <button id="fullscreenButton" class="ghost" type="button">全屏</button>
         </div>
         <div class="progress">
           <span id="time" class="time">00:00 / 00:00</span>
@@ -338,6 +339,7 @@ const renderHTML = () => `
       const videoElement = document.getElementById('video');
       const toggleButton = document.getElementById('toggleButton');
       const nextButton = document.getElementById('nextButton');
+      const fullscreenButton = document.getElementById('fullscreenButton');
       const controls = document.querySelector('.controls');
       const seekBar = document.getElementById('seek');
       const timeLabel = document.getElementById('time');
@@ -423,6 +425,35 @@ const renderHTML = () => `
         state.retryTimer = setTimeout(() => playRandomVideo(), 900);
       };
 
+      const getFullscreenElement = () =>
+        document.fullscreenElement || document.webkitFullscreenElement || null;
+
+      const updateFullscreenLabel = () => {
+        if (!fullscreenButton) return;
+        fullscreenButton.textContent = getFullscreenElement() ? '退出全屏' : '全屏';
+      };
+
+      const requestFullscreen = () => {
+        if (stage.requestFullscreen) return stage.requestFullscreen();
+        if (stage.webkitRequestFullscreen) return stage.webkitRequestFullscreen();
+        if (videoElement.webkitEnterFullscreen) return videoElement.webkitEnterFullscreen();
+        return Promise.resolve();
+      };
+
+      const exitFullscreen = () => {
+        if (document.exitFullscreen) return document.exitFullscreen();
+        if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+        return Promise.resolve();
+      };
+
+      const toggleFullscreen = () => {
+        if (getFullscreenElement()) {
+          exitFullscreen();
+        } else {
+          requestFullscreen();
+        }
+      };
+
       const isAutoplayError = (error) => {
         if (!error) return false;
         return (
@@ -501,6 +532,10 @@ const renderHTML = () => `
         playRandomVideo();
       });
 
+      if (fullscreenButton) {
+        fullscreenButton.addEventListener('click', toggleFullscreen);
+      }
+
       seekBar.addEventListener('input', () => {
         if (!Number.isFinite(videoElement.duration)) return;
         state.seeking = true;
@@ -539,6 +574,7 @@ const renderHTML = () => `
       videoElement.addEventListener('play', () => {
         updateToggleLabel();
         status.classList.add('hidden');
+        setHint('', false);
         showControls();
         scheduleHideControls();
       });
@@ -594,9 +630,13 @@ const renderHTML = () => `
         }
       });
 
+      document.addEventListener('fullscreenchange', updateFullscreenLabel);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenLabel);
+
       setStatus('准备就绪');
       setHint('点击开始');
       updateToggleLabel();
+      updateFullscreenLabel();
       showControls(true);
     </script>
   </body>

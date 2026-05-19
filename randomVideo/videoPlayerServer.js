@@ -16,23 +16,34 @@ const createEtag = (content) =>
 
 const renderPage = () => `
       <!DOCTYPE html>
-      <html lang="en">
+      <html lang="zh-CN">
       <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Video Player</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>随机短视频播放器</title>
         <link rel="stylesheet" href="/player.css">
       </head>
       <body>
-        <video id="video" controls></video>
-        <div id="status" class="status">Ready</div>
-        <div class="controls">
-          <button id="playButton" class="primary">开始</button>
-          <button id="toggleButton">暂停</button>
-          <button id="nextButton" class="ghost">下一条</button>
-          <div class="progress">
-            <span id="time">00:00 / 00:00</span>
-            <input id="seek" type="range" min="0" max="100" value="0" />
+        <div class="stage">
+          <video id="video" playsinline webkit-playsinline preload="metadata"></video>
+          <div class="vignette"></div>
+          <div id="status" class="status">准备就绪</div>
+          <div id="hint" class="hint">点击开始</div>
+          <div class="controls">
+            <div class="cluster">
+              <button id="toggleButton" class="primary" type="button">开始</button>
+              <button id="nextButton" class="ghost" type="button">下一条</button>
+              <div class="source">
+                <label for="sourceSelect">来源</label>
+                <select id="sourceSelect">
+                  <option value="random">随机全部</option>
+                </select>
+              </div>
+            </div>
+            <div class="progress">
+              <span id="time" class="time">00:00 / 00:00</span>
+              <input id="seek" type="range" min="0" max="100" value="0" />
+            </div>
           </div>
         </div>
         <script src="/player.js" defer></script>
@@ -76,6 +87,15 @@ const loadChannels = async () => {
 };
 
 const pickRandom = (items) => items[Math.floor(Math.random() * items.length)];
+
+const labelForSource = (value) => {
+  try {
+    const url = new URL(value);
+    return url.hostname || value;
+  } catch (error) {
+    return value;
+  }
+};
 
 const isFresh = (req, { etag, lastModified }) => {
   const ifNoneMatch = req.headers["if-none-match"];
@@ -126,12 +146,38 @@ const startServer = async () => {
     }
 
     if (pathname === "/api/next") {
+      const sourceId = requestUrl.searchParams.get("source");
       res.writeHead(200, {
         "Content-Type": "application/json",
         "Cache-Control": "no-store",
       });
-      const url = channels.length > 0 ? pickRandom(channels) : null;
+      let url = null;
+      if (channels.length > 0) {
+        if (sourceId && sourceId !== "random") {
+          const index = Number(sourceId);
+          if (Number.isInteger(index) && channels[index]) {
+            url = channels[index];
+          } else {
+            url = pickRandom(channels);
+          }
+        } else {
+          url = pickRandom(channels);
+        }
+      }
       res.end(JSON.stringify({ url }));
+      return;
+    }
+
+    if (pathname === "/api/sources") {
+      res.writeHead(200, {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+      });
+      const sources = channels.map((value, index) => ({
+        id: String(index),
+        label: labelForSource(value),
+      }));
+      res.end(JSON.stringify({ sources }));
       return;
     }
 
